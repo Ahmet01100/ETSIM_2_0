@@ -184,14 +184,14 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 											SELECT * 
 											FROM can_contains cc 
 											WHERE cc.id_etsim_game = eg.id_etsim_game 
-											AND cc.id_etsim_members = ? );";
+											AND cc.id_etsim_members = :idMember );";
 
 			if( $stmttableSelectGameNotRegister = $mysqli->prepare($tableSelectGameNotRegister) ) {
-                $stmttableSelectGameNotRegister->bind_param('s', $_SESSION['user_id']);
+                $stmttableSelectGameNotRegister->bindParam(':idMember', $_SESSION['user_id']);
 				$stmttableSelectGameNotRegister->execute();
-				$resultstmttableSelectGameNotRegister = $stmttableSelectGameNotRegister->get_result();
+				//$resultstmttableSelectGameNotRegister = $stmttableSelectGameNotRegister->get_result();
 				
-				while($rowresultstmttableSelectGameNotRegister = $resultstmttableSelectGameNotRegister->fetch_assoc()) {
+				while($rowresultstmttableSelectGameNotRegister = $stmttableSelectGameNotRegister->fetch()) {
 					$tableSelectGameOpen = "SELECT * FROM etsim_game WHERE id_etsim_game = ? AND status_etsim_game = 'Open'";
 					if( $stmttableSelectGameOpen = $mysqli->prepare($tableSelectGameOpen) ) {
 						$stmttableSelectGameOpen->bind_param('s', $rowresultstmttableSelectGameNotRegister['id_etsim_game']);
@@ -209,7 +209,7 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 						$error_msg .= " Error access etsime game ! ";
 					}
 				}
-				$resultstmttableSelectGameNotRegister->close();
+				//$resultstmttableSelectGameNotRegister->close();
 			} else {
 				$error_msg .= " Error access etsime game ! ";
             }

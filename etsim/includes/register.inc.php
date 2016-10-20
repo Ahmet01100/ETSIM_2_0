@@ -38,16 +38,17 @@ if (isset($_POST['registration_form']) && $_POST['registration_form'] == 'regist
 			if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 				$error_msg .= "Invalid email format"; 
 			} else {
-				$prep_stmt = "SELECT id_etsim_members FROM etsim_members WHERE email_etsim_members = ? OR username_etsim_members = ? LIMIT 1";
+				$prep_stmt = "SELECT id_etsim_members FROM etsim_members WHERE email_etsim_members = :email OR username_etsim_members = :username LIMIT 1";
 				if(!($stmt = $mysqli->prepare($prep_stmt))) {
 					echo "Echec de la préparation : (" . $mysqli->errno . ") " . $mysqli->error;
 				}
 				if ($stmt) {
-					$stmt->bind_param('ss',$email, $username);
+					$stmt->bindParam(':email',$email);
+                    $stmt->bindParam(':username', $username);
 					$stmt->execute();
-					$stmt->store_result();
+					//$stmt->store_result();
 					
-					if ($stmt->num_rows == 1) {
+					if ($stmt->rowCount() == 1) {
 						// Il y a déjà un utilisateur avec ce nom-là
 						$error_msg .= '<p class="error">Il existe déjà un utilisateur avec le même nom.</p>';
 					}
@@ -86,22 +87,28 @@ if (isset($_POST['registration_form']) && $_POST['registration_form'] == 'regist
 					// echo "password arrivée ".$cryptpassword . "\n";
 			 
 					// Enregistre le nouvel utilisateur dans la base de données
-					if ($insert_stmt = $mysqli->prepare("INSERT INTO etsim_members (username_etsim_members, email_etsim_members, password_etsim_members, salt_etsim_members, role_etsim_members, enable_etsim_members, group_etsim_members) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+					if ($insert_stmt = $mysqli->prepare("INSERT INTO etsim_members (username_etsim_members, email_etsim_members, password_etsim_members, salt_etsim_members, role_etsim_members, enable_etsim_members, group_etsim_members) VALUES (:username, :email, :pwd, :salt, :role, :enable, :group)")) {
 						// echo "password_départ : ".$password."<br>";
-						$insert_stmt->bind_param('sssssss',$username, $email, $cryptpassword, $random_salt, $player, $enable, $institution);
+                        $insert_stmt->bindParam(':username',$username);
+                        $insert_stmt->bindParam(':email', $email);
+                        $insert_stmt->bindParam(':pwd', $cryptpassword);
+                        $insert_stmt->bindParam(':salt', $random_salt);
+                        $insert_stmt->bindParam(':role', $player);
+                        $insert_stmt->bindParam(':enable', $enable);
+						$insert_stmt->bindParam(':group', $institution);
 						$message = "	Dear Mr. $username
 									Your Account has been created on http://etsim.pro-project.fr/. 
 									You should wait the activation of your account by a administrator for use it. An other email will be send after enable.
 									
 									Yours sincerely
 									";
-						$header = "From: bryan.maisano@utbm.fr";
+						$header = "From: ahmet.imre@utbm.fr";
 						$subject = "Resgister to ETSIM Serious Game";
 						mail($email,$subject,$message,$header);
-						$mail_admin = "bryan.maisano@utbm.fr";
+						$mail_admin = "ahmet.imre@utbm.fr";
 						$message_admin = "New user has been created on ETSIM Serious GAME. You souhld activate this user : $username ";
 						$subject_admin = "New register user : $username";
-						$header_admin = "From: etsim.serious-game@utbm.fr";
+						$header_admin = "From: ahmet.imre@utbm.fr";
 						mail($mail_admin,$subject_admin,$message_admin,$header_admin);
 						
 						
@@ -109,8 +116,8 @@ if (isset($_POST['registration_form']) && $_POST['registration_form'] == 'regist
 						if (! $insert_stmt->execute()) {
 							header('error.php?err=Registration failure: INSERT');
 						}
-						$mysqli->close();
-						$insert_stmt->close();
+						//$mysqli->close();
+						//$insert_stmt->close();
 						$success_msg .= '<p class="error">Your account has been created !</p>';
 					}
 				} else {

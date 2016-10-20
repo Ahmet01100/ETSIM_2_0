@@ -42,17 +42,25 @@ function login($login, $password, $mysqli) {
     // L’utilisation de déclarations empêche les injections SQL
     if ($stmt = $mysqli->prepare("SELECT id_etsim_members, username_etsim_members, email_etsim_members, password_etsim_members, salt_etsim_members, role_etsim_members, group_etsim_members
         FROM etsim_members
-        WHERE email_etsim_members = ?
-		OR username_etsim_members = ?
+        WHERE email_etsim_members = :email
+		OR username_etsim_members = :username
 		AND enable_etsim_members = 1
         LIMIT 1")) {
 		//echo "Echec de la préparation : (" . $mysqli->errno . ") " . $mysqli->error;
-        $stmt->bind_param('ss', $login, $login);  // Lie "$email" aux paramètres.
+        $stmt->bindParam(':email', $login);  // Lie "$email" aux paramètres.
+        $stmt->bindParam(':username', $login);  // Lie "$email" aux paramètres.
         $stmt->execute();    // Exécute la déclaration.
-        $stmt->store_result();
+        //$stmt->store_result();
  
         // Récupère les variables dans le résultat
-        $stmt->bind_result($user_id, $username, $email, $db_password, $salt, $role, $group);
+        
+        $stmt->bindColumn('id_etsim_members',$user_id);
+        $stmt->bindColumn('username_etsim_members', $username);
+        $stmt->bindColumn('email_etsim_members', $email);
+        $stmt->bindColumn('password_etsim_members', $db_password);
+        $stmt->bindColumn('salt_etsim_members', $salt);
+        $stmt->bindColumn('role_etsim_members', $role);
+        $stmt->bindColumn('group_etsim_members', $group);
         $stmt->fetch();
 		// echo "$salt <br />";
 		// echo "$db_password <br />";
@@ -181,17 +189,18 @@ function login_check($mysqli) {
  
         // Récupère la chaîne user-agent de l’utilisateur
         $user_browser = $_SERVER['HTTP_USER_AGENT'];
- 
-        if ($stmt = $mysqli->prepare("SELECT password_etsim_members FROM etsim_members WHERE id_etsim_members = ? LIMIT 1")) {
+        
+        
+        
+        if ($stmt = $mysqli->prepare("SELECT password_etsim_members FROM etsim_members WHERE id_etsim_members = :iduser LIMIT 1")) {
             // Lie "$user_id" aux paramètres. 
-            $stmt->bind_param('i', $user_id);
+            $stmt->bindParam('iduser', $user_id);
             $stmt->execute();   // Exécute la déclaration.
-            $stmt->store_result();
+            //$stmt->store_result();
  
-            if ($stmt->num_rows == 1) {
-                // Si l’utilisateur existe, récupère les variables dans le résultat
-                $stmt->bind_result($password);
-                $stmt->fetch();
+            if ($stmt->rowCount() == 1) {
+                // Si l’utilisateur existe, on récupère son mot de passe depuis la base
+                $password = $stmt->fetchColumn();
                 $login_check = hash('sha512', $password . $user_browser);
  
                 if ($login_check == $login_string) {
