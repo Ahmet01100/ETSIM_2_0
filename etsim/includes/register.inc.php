@@ -20,7 +20,6 @@ if (isset($_POST['registration_form']) && $_POST['registration_form'] == 'regist
 	 
 		$password = $_POST['password'];
 		$cpassword = $_POST['confirmpwd'];
-		//$password = $_POST['password'];
 		if ((strlen($password) > 128) && (strlen($cpassword) > 128)) {
 			// Le mot de passe hashé ne doit pas dépasser les 128 caractères
 			// Si ce n’est aps le cas, quelque chose de vraiment bizarre s’est produit
@@ -30,7 +29,6 @@ if (isset($_POST['registration_form']) && $_POST['registration_form'] == 'regist
 		// La forme du nom d’utilisateur et du mot de passe a été vérifiée côté client
 		// Cela devrait suffire, car personne ne tire avantage
 		// à briser ce genre de règles.
-		//
 		
 		if ($_POST['password'] != $_POST['confirmpwd']) {
 				$error_msg .= '<p class="error">Your password and confirmation must match exactly</p>';
@@ -88,7 +86,7 @@ if (isset($_POST['registration_form']) && $_POST['registration_form'] == 'regist
 			 
 					// Enregistre le nouvel utilisateur dans la base de données
 					if ($insert_stmt = $mysqli->prepare("INSERT INTO etsim_members (username_etsim_members, email_etsim_members, password_etsim_members, salt_etsim_members, role_etsim_members, enable_etsim_members, group_etsim_members) VALUES (:username, :email, :pwd, :salt, :role, :enable, :group)")) {
-						// echo "password_départ : ".$password."<br>";
+
                         $insert_stmt->bindParam(':username',$username);
                         $insert_stmt->bindParam(':email', $email);
                         $insert_stmt->bindParam(':pwd', $cryptpassword);
@@ -105,8 +103,8 @@ if (isset($_POST['registration_form']) && $_POST['registration_form'] == 'regist
                         $header = "From: bryan.maisano@utbm.fr";
 						$subject = "Resgister to ETSIM Serious Game";
 						mail($email,$subject,$message,$header);
-						$mail_admin = "bryan.maisano@utbm.fr";
-						$message_admin = "New user has been created on ETSIM Serious GAME. You souhld activate this user : $username ";
+						$mail_admin = "soufian.besbiss@utbm.fr";
+						$message_admin = "New user has been created on ETSIM Serious GAME. You should activate this user : $username ";
 						$subject_admin = "New register user : $username";
 						$header_admin = "From: etsim.serious-game@utbm.fr";
 						mail($mail_admin,$subject_admin,$message_admin,$header_admin);
