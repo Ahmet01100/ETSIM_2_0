@@ -189,22 +189,24 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 			if( $stmttableSelectGameNotRegister = $mysqli->prepare($tableSelectGameNotRegister) ) {
                 $stmttableSelectGameNotRegister->bindParam(':idMember', $_SESSION['user_id']);
 				$stmttableSelectGameNotRegister->execute();
+                
+                //echo $tableSelectGameNotRegister;
 				//$resultstmttableSelectGameNotRegister = $stmttableSelectGameNotRegister->get_result();
 				
 				while($rowresultstmttableSelectGameNotRegister = $stmttableSelectGameNotRegister->fetch()) {
-					$tableSelectGameOpen = "SELECT * FROM etsim_game WHERE id_etsim_game = ? AND status_etsim_game = 'Open'";
+					$tableSelectGameOpen = "SELECT * FROM etsim_game WHERE id_etsim_game = :idEtsimGame AND status_etsim_game = 'Open'";
 					if( $stmttableSelectGameOpen = $mysqli->prepare($tableSelectGameOpen) ) {
-						$stmttableSelectGameOpen->bind_param('s', $rowresultstmttableSelectGameNotRegister['id_etsim_game']);
+						$stmttableSelectGameOpen->bindParam(':idEtsimGame', $rowresultstmttableSelectGameNotRegister['id_etsim_game']);
 						$stmttableSelectGameOpen->execute();
-						$resultstmttableSelectGameOpen = $stmttableSelectGameOpen->get_result();
-						while($rowresultstmttableSelectGameOpen = $resultstmttableSelectGameOpen->fetch_assoc()) {
+						//$resultstmttableSelectGameOpen = $stmttableSelectGameOpen->get_result();
+						while($rowresultstmttableSelectGameOpen = $stmttableSelectGameOpen->fetch()) {
 							echo '<tr id="'.$rowresultstmttableSelectGameOpen['id_etsim_game'].'">';
 							echo '<td><input disabled type="text" id="'.$rowresultstmttableSelectGameOpen['id_etsim_game'].'" class="date_etsim_game" value="'.$rowresultstmttableSelectGameOpen['date_etsim_game'].'"></td>';
 							echo '<td><input disabled type="text" id="'.$rowresultstmttableSelectGameOpen['id_etsim_game'].'" class="description_etsim_game" value="'.$rowresultstmttableSelectGameOpen['description_etsim_game'].'"></td>';
 							echo '<td><input type="text" id="'.$rowresultstmttableSelectGameOpen['id_etsim_game'].'" class="password_etsim_game"></td>';
 							echo '<td><button type="button" id="'.$rowresultstmttableSelectGameOpen['id_etsim_game'].'" class="join_etsim_game" >JOIN GAME</button></td></tr>';
 						}
-					$resultstmttableSelectGameOpen->close();
+					//$resultstmttableSelectGameOpen->close();
 					} else {
 						$error_msg .= " Error access etsime game ! ";
 					}
@@ -221,16 +223,16 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 											ON cc.id_etsim_game = eg.id_etsim_game 
 											INNER JOIN etsim_members em 
 											ON cc.id_etsim_members = em.id_etsim_members
-											WHERE cc.id_etsim_members = ?
+											WHERE cc.id_etsim_members = :idMember
 											AND eg.status_etsim_game = 'Play'
 											GROUP BY eg.id_etsim_game
 											ORDER BY eg.id_etsim_game";
 			if( $stmttableSelectGameRegister = $mysqli->prepare($tableSelectGameRegister) ) {
-                $stmttableSelectGameRegister->bind_param('s', $_SESSION['user_id']);
+                $stmttableSelectGameRegister->bindParam(':idMember', $_SESSION['user_id']);
 				$stmttableSelectGameRegister->execute();
-				$resultstmttableSelectGameRegister = $stmttableSelectGameRegister->get_result();
+				//$resultstmttableSelectGameRegister = $stmttableSelectGameRegister->get_result();
 
-				while($rowresultstmttableSelectGameRegister = $resultstmttableSelectGameRegister->fetch_assoc()) {
+				while($rowresultstmttableSelectGameRegister = $stmttableSelectGameRegister->fetch()) {
 					echo '<tr id="'.$rowresultstmttableSelectGameRegister['id_etsim_game'].'"><form action="inGame.php" method="post" class="enterInGame"><input type="hidden" name="goInGame" value="goInGame"/>';
 					echo '<td><input disabled type="text" id="'.$rowresultstmttableSelectGameRegister['id_etsim_game'].'" class="id_etsim_game" value="'.$rowresultstmttableSelectGameRegister['id_etsim_game'].'"><input type="hidden" name="id_etsim_game" value="'.$rowresultstmttableSelectGameRegister['id_etsim_game'].'"></td>';
 					echo '<td><input disabled type="text" id="'.$rowresultstmttableSelectGameRegister['id_etsim_game'].'" class="date_etsim_game" value="'.$rowresultstmttableSelectGameRegister['date_etsim_game'].'"><input type="hidden" name="date_etsim_game" value="'.$rowresultstmttableSelectGameRegister['date_etsim_game'].'"></td>';
@@ -238,7 +240,7 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 					echo '<td><input type="submit" name="register" id="'.$rowresultstmttableSelectGameRegister['id_etsim_game'].'" value="ENTER IN GAME" class="show_your_etsim_game" /></td></form>';
 					echo '<td><button type="button" id="'.$rowresultstmttableSelectGameRegister['id_etsim_game'].'" class="leave_etsim_game">LEAVE GAME</button></td></tr>';
 				}
-				$resultstmttableSelectGameRegister->close();
+				//$resultstmttableSelectGameRegister->close();
 			} else {
 				$error_msg .= " Error access etsime game ! ";
             }
@@ -250,22 +252,22 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 											ON cc.id_etsim_game = eg.id_etsim_game 
 											INNER JOIN etsim_members em 
 											ON cc.id_etsim_members = em.id_etsim_members
-											WHERE cc.id_etsim_members = ?
+											WHERE cc.id_etsim_members = :idMember
 											AND eg.status_etsim_game = 'Completed'
 											GROUP BY eg.id_etsim_game
 											ORDER BY eg.id_etsim_game";
 			if( $stmttableSelectCompletedGame = $mysqli->prepare($tableSelectCompletedGame) ) {
-                $stmttableSelectCompletedGame->bind_param('s', $_SESSION['user_id']);
+                $stmttableSelectCompletedGame->bindParam(':idMember', $_SESSION['user_id']);
 				$stmttableSelectCompletedGame->execute();
-				$resultstmttableSelectCompletedGame = $stmttableSelectCompletedGame->get_result();
+				//$resultstmttableSelectCompletedGame = $stmttableSelectCompletedGame->get_result();
 
-				while($rowresultstmttableSelectCompletedGame = $resultstmttableSelectCompletedGame->fetch_assoc()) {
+				while($rowresultstmttableSelectCompletedGame = $stmttableSelectCompletedGame->fetch()) {
 					echo '<tr id="'.$rowresultstmttableSelectCompletedGame['id_etsim_game'].'">';
 					echo '<td><input disabled type="text" id="'.$rowresultstmttableSelectCompletedGame['id_etsim_game'].'" class="date_etsim_game" value="'.$rowresultstmttableSelectCompletedGame['date_etsim_game'].'"></td>';
 					echo '<td><input disabled type="text" id="'.$rowresultstmttableSelectCompletedGame['id_etsim_game'].'" class="description_etsim_game" value="'.$rowresultstmttableSelectCompletedGame['description_etsim_game'].'"></td>';
 					echo '<td><button type="button" id="'.$rowresultstmttableSelectCompletedGame['id_etsim_game'].'" class="show_your_etsim_game">SHOW RESULTS</button>';
 				}
-				$resultstmttableSelectCompletedGame->close();
+				//$resultstmttableSelectCompletedGame->close();
 			} else {
 				$error_msg .= " Error access etsime game ! ";
             }
@@ -300,11 +302,11 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 		
 		function countUserTotalInGame($mysqli, $idGame) {
 			$countUserTotalInGame = 0;
-			if ($SelectcountUserTotalInGame = $mysqli->prepare("SELECT * FROM can_contains WHERE id_etsim_game = ? GROUP BY id_etsim_game, id_etsim_members ORDER BY id_etsim_members;")) {
-				$SelectcountUserTotalInGame->bind_param('s', $idGame);  // Lie "$email" aux paramètres.
+			if ($SelectcountUserTotalInGame = $mysqli->prepare("SELECT * FROM can_contains WHERE id_etsim_game = :idEtsimGame GROUP BY id_etsim_game, id_etsim_members ORDER BY id_etsim_members;")) {
+				$SelectcountUserTotalInGame->bindParam(':idEtsimGame', $idGame);  // Lie "$email" aux paramètres.
 				$SelectcountUserTotalInGame->execute();    // Exécute la déclaration.
-				$resultSelectcountUserTotalInGame = $SelectcountUserTotalInGame->get_result();
-					while($rowresultSelectcountUserTotalInGame = $resultSelectcountUserTotalInGame->fetch_assoc()) {
+				//$resultSelectcountUserTotalInGame = $SelectcountUserTotalInGame->get_result();
+					while($rowresultSelectcountUserTotalInGame = $SelectcountUserTotalInGame->fetch()) {
 						$countUserTotalInGame++;
 					}
 				return $countUserTotalInGame;
@@ -317,13 +319,13 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 			if ($SelectcountUserTotalInGameFinnishRound = $mysqli->prepare("SELECT * FROM etsim_round_game_temp WHERE idetsimgame_etsim_round_game_temp = ? AND number_etsim_round_game_temp = ? AND finnish_etsim_round_game_temp = 1 GROUP BY idetsimgame_etsim_round_game_temp, 	idetsimmember_etsim_round_game_temp, number_etsim_round_game_temp, finnish_etsim_round_game_temp ORDER BY number_etsim_round_game_temp;")) {
 				$SelectcountUserTotalInGameFinnishRound->bind_param('ss', $idGame, $idRound);
 				$SelectcountUserTotalInGameFinnishRound->execute();
-				$resultSelectcountUserTotalInGameFinnishRound = $SelectcountUserTotalInGameFinnishRound->get_result();
+				//$resultSelectcountUserTotalInGameFinnishRound = $SelectcountUserTotalInGameFinnishRound->get_result();
 						while($rowresultSelectcountUserTotalInGameFinnishRound = $resultSelectcountUserTotalInGameFinnishRound->fetch_assoc()) {
 							$countUserTotalInGameFinnishRound++;
 						}
 				return $countUserTotalInGameFinnishRound;
 			}
-			$SelectcountUserTotalInGameFinnishRound->close();
+			//$SelectcountUserTotalInGameFinnishRound->close();
 		}
 		
 		function statusCurrentRoundGame($mysqli, $idGame, $idRound) {
