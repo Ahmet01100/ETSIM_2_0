@@ -102,13 +102,13 @@ if (isset($_POST['registration_form']) && $_POST['registration_form'] == 'regist
 									
 									Yours sincerely
 									";
-						$header = "From: ahmet.imre@utbm.fr";
+                        $header = "From: bryan.maisano@utbm.fr";
 						$subject = "Resgister to ETSIM Serious Game";
 						mail($email,$subject,$message,$header);
-						$mail_admin = "ahmet.imre@utbm.fr";
+						$mail_admin = "bryan.maisano@utbm.fr";
 						$message_admin = "New user has been created on ETSIM Serious GAME. You souhld activate this user : $username ";
 						$subject_admin = "New register user : $username";
-						$header_admin = "From: ahmet.imre@utbm.fr";
+						$header_admin = "From: etsim.serious-game@utbm.fr";
 						mail($mail_admin,$subject_admin,$message_admin,$header_admin);
 						
 						
