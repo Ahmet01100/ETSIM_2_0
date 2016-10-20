@@ -26,7 +26,7 @@ sec_session_start();
 			
 			<?php if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager') : ?>
 			<!-- Admin -->
-				<section class="wrapper style1 min-width="800px" width="30%" max-width="1000px">
+				<section class="wrapper style1" min-width="800px" width="30%" max-width="1000px">
 					<div class="container">
 						<header class="major">
 							<div class="box post2">
@@ -60,7 +60,7 @@ sec_session_start();
 				</section>
 			<!-- Admin -->
 			<div>
-				<section class="wrapper style1 min-width="800px" width="30%" max-width="1000px">
+				<section class="wrapper style1" min-width="800px" width="30%" max-width="1000px">
 					<div class="container">
 						<header class="major">
 							<div class="box post2">
@@ -97,7 +97,7 @@ sec_session_start();
 			
 			<!-- Admin -->
 			<div>
-				<section class="wrapper style1 min-width="800px" width="30%" max-width="1000px">
+				<section class="wrapper style1" min-width="800px" width="30%" max-width="1000px">
 					<div class="container">
 						<header class="major">
 							<div class="box post2">
@@ -127,7 +127,7 @@ sec_session_start();
 																FROM etsim_members
 																WHERE role_etsim_members = "Player";';
 											createTable($mysqli, $sql_query_player);
-											$mysqli->close();
+											//$mysqli->close();
 										?>
 									</table>
 								</article>
@@ -138,7 +138,7 @@ sec_session_start();
 			</div>
 			
 			<?php else : ?>
-				<section class="wrapper style1 min-width="800px" width="30%" max-width="1000px">
+				<section class="wrapper style1" min-width="800px" width="30%" max-width="1000px">
 					<div class="container">
 						<header class="major">
 							<div class="box post2">

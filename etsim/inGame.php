@@ -54,12 +54,12 @@ if(!isset($_SESSION))
 
 												//	$stmtSelectCurrentRoundNumber->bind_param('s', $stringlike);
 													$stmtSelectCurrentRoundNumber->execute();    // Exécute la déclaration.
-													$stmtSelectCurrentRoundNumber->store_result();
+													//$stmtSelectCurrentRoundNumber->store_result();
 											 
 													// Récupère les variables dans le résultat
-													$stmtSelectCurrentRoundNumber->bind_result($roundGame);
+													$stmtSelectCurrentRoundNumber->bindColumn('number_etsim_round_game',$roundGame);
 													$stmtSelectCurrentRoundNumber->fetch();
-													$stmtSelectCurrentRoundNumber->close();
+													//$stmtSelectCurrentRoundNumber->close();
 													$roundGame = ($roundGame + 1);
 												}
 											}
@@ -71,19 +71,20 @@ if(!isset($_SESSION))
 																										FROM etsim_round_game erg 
 																										INNER JOIN can_contains cc 
 																										ON erg.id_etsim_round_game = cc.id_etsim_round_game 
-																										WHERE cc.id_etsim_members = ? 
-																										AND cc.id_etsim_game = ? 
+																										WHERE cc.id_etsim_members = :idEtsimMember 
+																										AND cc.id_etsim_game = idEtsimGame 
 																										GROUP BY erg.number_etsim_round_game 
 																										ORDER BY erg.number_etsim_round_game 
 																										DESC LIMIT 1;")) {
-													$stmtSelectCurrentRoundNumber->bind_param('ss', $_SESSION['user_id'], $idGame);
+													$stmtSelectCurrentRoundNumber->bindParam(':idEtsimMember', $_SESSION['user_id']);
+                                                    $stmtSelectCurrentRoundNumber->bindParam(':idEtsimGame', $idGame);
 													$stmtSelectCurrentRoundNumber->execute();    // Exécute la déclaration.
-													$stmtSelectCurrentRoundNumber->store_result();
+													//$stmtSelectCurrentRoundNumber->store_result();
 											 
 													// Récupère les variables dans le résultat
-													$stmtSelectCurrentRoundNumber->bind_result($roundGame);
+													$stmtSelectCurrentRoundNumber->bindColumn('number_etsim_round_game',$roundGame);
 													$stmtSelectCurrentRoundNumber->fetch();
-													$stmtSelectCurrentRoundNumber->close();
+													//$stmtSelectCurrentRoundNumber->close();
 													$roundGame = ($roundGame + 1);
 												}
 											}
@@ -227,7 +228,7 @@ if(!isset($_SESSION))
 			<!-- Admin -->
 					
 			<?php else : ?>
-				<section class="wrapper style1 min-width="800px" width="30%" max-width="1000px">
+				<section class="wrapper style1" min-width="800px" width="30%" max-width="1000px">
 					<div class="container">
 						<header class="major">
 							<div class="box post2">

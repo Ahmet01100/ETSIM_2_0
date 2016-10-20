@@ -275,9 +275,9 @@ function createTable($mysqli, $sql_query) {
 	$role = array();
 	$stmt = $mysqli->prepare($sql_query);
 	$stmt->execute();
-	$result = $stmt->get_result();
+	//$result = $stmt->get_result();
 
-	while($row = $result->fetch_assoc()){
+	while($row = $stmt->fetch()){
 		echo '<tr id="'.$row['id_etsim_members'].'"><td>';
 		echo '<input disabled type="text" class="id_etsim_members" value="'.$row['id_etsim_members'].'">';
 		echo '</td><td>';
@@ -291,8 +291,8 @@ function createTable($mysqli, $sql_query) {
 		$tableSelect = "SELECT role_etsim_members FROM etsim_members GROUP BY role_etsim_members ORDER BY role_etsim_members ASC";
 		$stmttableSelect = $mysqli->prepare($tableSelect);
 		$stmttableSelect->execute();
-		$resulttableSelect = $stmttableSelect->get_result();
-		while($rowresulttableSelect = $resulttableSelect->fetch_assoc()) {
+		//$resulttableSelect = $stmttableSelect->get_result();
+		while($rowresulttableSelect = $stmttableSelect->fetch()) {
 			if ($row['role_etsim_members'] == $rowresulttableSelect['role_etsim_members']) {
 				echo '<option value="'.$rowresulttableSelect['role_etsim_members'].'" selected>'.$rowresulttableSelect['role_etsim_members'].'</option>';
 				$role[] = $rowresulttableSelect['role_etsim_members'];
@@ -311,7 +311,7 @@ function createTable($mysqli, $sql_query) {
 			echo '<option value="Player">Player</option>';
 		}	
 		echo '</select>';
-		$stmttableSelect->close();
+		//$stmttableSelect->close();
 		echo '</td><td>';
 		if ($row['enable_etsim_members'] == 0) {
 			echo '<input id="without" type="checkbox" class="enable_etsim_members">';

@@ -17,24 +17,24 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 		$tableSelectGame = "SELECT * FROM etsim_game";
 		$stmttableSelectGame = $mysqli->prepare($tableSelectGame);
 		$stmttableSelectGame->execute();
-		$resultstmttableSelectGame = $stmttableSelectGame->get_result();	
-		while($rowresultstmttableSelectGame = $resultstmttableSelectGame->fetch_assoc()) {
+		//$resultstmttableSelectGame = $stmttableSelectGame->get_result();	
+		while($rowresultstmttableSelectGame = $stmttableSelectGame->fetch()) {
 			echo '<tr id="'.$rowresultstmttableSelectGame['id_etsim_game'].'">';
 			echo '<td><input disabled type="text" id="'.$rowresultstmttableSelectGame['id_etsim_game'].'" class="id_etsim_game" value="'.$rowresultstmttableSelectGame['id_etsim_game'].'"></td>';
 			echo '<td><input disabled type="text" id="'.$rowresultstmttableSelectGame['date_etsim_game'].'" class="date_etsim_game" value="'.$rowresultstmttableSelectGame['date_etsim_game'].'"></td>';
 			echo '<td><input type="text" id="'.$rowresultstmttableSelectGame['description_etsim_game'].'" class="description_etsim_game" value="'.$rowresultstmttableSelectGame['description_etsim_game'].'"></td>';
 			echo '<td><select multiple="multiple" id="'.$rowresultstmttableSelectGame['id_etsim_game'].'" class="ListeBoxUsersContains">'; 
-			$sql_usersin = "SELECT em.id_etsim_members, em.username_etsim_members, eg.id_etsim_game FROM etsim_members em INNER JOIN can_contains cc ON em.id_etsim_members = cc.id_etsim_members INNER JOIN etsim_game eg ON cc.id_etsim_game = eg.id_etsim_game WHERE eg.id_etsim_game = ? GROUP BY em.id_etsim_members ORDER BY em.id_etsim_members";
+			$sql_usersin = "SELECT em.id_etsim_members, em.username_etsim_members, eg.id_etsim_game FROM etsim_members em INNER JOIN can_contains cc ON em.id_etsim_members = cc.id_etsim_members INNER JOIN etsim_game eg ON cc.id_etsim_game = eg.id_etsim_game WHERE eg.id_etsim_game = :idEtsimGame GROUP BY em.id_etsim_members ORDER BY em.id_etsim_members";
 			if ($stmtListeBoxUsersContains = $mysqli->prepare($sql_usersin)) {
-				$stmtListeBoxUsersContains->bind_param('s',$rowresultstmttableSelectGame['id_etsim_game']);
+				$stmtListeBoxUsersContains->bindParam(':idEtsimGame',$rowresultstmttableSelectGame['id_etsim_game']);
 				$stmtListeBoxUsersContains->execute();
-				$resultListeBoxUsersContains = $stmtListeBoxUsersContains->get_result();
+				//$resultListeBoxUsersContains = $stmtListeBoxUsersContains->get_result();
 
-				while($rowresultListeBoxUsersContains = $resultListeBoxUsersContains->fetch_assoc()) {
+				while($rowresultListeBoxUsersContains = $stmtListeBoxUsersContains->fetch()) {
 					$user = $rowresultListeBoxUsersContains['id_etsim_members'].' | '.$rowresultListeBoxUsersContains['username_etsim_members'];
 					echo '<option id="'.$rowresultListeBoxUsersContains['id_etsim_members'].'" value="'.$user.'" class="id_etsim_members">"'.$user.'"</option>';
 				}
-				$stmtListeBoxUsersContains->close();
+				//$stmtListeBoxUsersContains->close();
 			} else {
 				$error_msg .= "je fais de la merde";
 			}
@@ -42,17 +42,17 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 			echo '</select>';
 			echo '</td><td>';
 			echo '<select multiple="multiple" id="'.$rowresultstmttableSelectGame['id_etsim_game'].'" class="ListeBoxUsersNotContains">';
-			$sql_userout = "SELECT em.id_etsim_members, em.username_etsim_members FROM etsim_members em WHERE NOT EXISTS (SELECT * FROM can_contains cc WHERE em.id_etsim_members = cc.id_etsim_members AND cc.id_etsim_game = ?)";
+			$sql_userout = "SELECT em.id_etsim_members, em.username_etsim_members FROM etsim_members em WHERE NOT EXISTS (SELECT * FROM can_contains cc WHERE em.id_etsim_members = cc.id_etsim_members AND cc.id_etsim_game = :idEtsimGame)";
 			if ($stmtListeBoxUsersNotContains = $mysqli->prepare($sql_userout)) {
-				$stmtListeBoxUsersNotContains->bind_param('s',$rowresultstmttableSelectGame['id_etsim_game']);
+				$stmtListeBoxUsersNotContains->bindParam(':idEtsimGame',$rowresultstmttableSelectGame['id_etsim_game']);
 				$stmtListeBoxUsersNotContains->execute();
-				$resultstmtListeBoxUsersNotContains = $stmtListeBoxUsersNotContains->get_result();
+				//$resultstmtListeBoxUsersNotContains = $stmtListeBoxUsersNotContains->get_result();
 
-				while($rowresultstmtListeBoxUsersNotContains = $resultstmtListeBoxUsersNotContains->fetch_assoc()) {
+				while($rowresultstmtListeBoxUsersNotContains = $stmtListeBoxUsersNotContains->fetch()) {
 					$user = $rowresultstmtListeBoxUsersNotContains['id_etsim_members'].' | '.$rowresultstmtListeBoxUsersNotContains['username_etsim_members'];
 					echo '<option id="'.$rowresultstmtListeBoxUsersNotContains['id_etsim_members'].'" class="id_etsim_members"  value="'.$user.'">"'.$user.'"</option>';
 				}
-				$stmtListeBoxUsersNotContains->close();
+				//$stmtListeBoxUsersNotContains->close();
 			} else {
 				$error_msg .= "je fais de la merde";
 			}
@@ -76,24 +76,24 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 			echo '<td><button type="button" id="'.$rowresultstmttableSelectGame['id_etsim_game'].'" class="viewgame_etsim_game" />VIEW</button></td>';
 			echo '<td><button type="button" id="'.$rowresultstmttableSelectGame['id_etsim_game'].'" class="delete_etsim_game">Delete</button></td></tr>';
 		}
-		$stmttableSelectGame->close();
+		//$stmttableSelectGame->close();
 	}
 
 	function createTablePlant($mysqli){
 		$tableSelectPlant = "SELECT * FROM etsim_plant ep INNER JOIN is_type it ON ep.id_etsim_plant = it.id_etsim_plant INNER JOIN etsim_type_plant etp ON it.id_etsim_type_plant = etp.id_etsim_type_plant;";
 		if ($stmttableSelectPlant = $mysqli->prepare($tableSelectPlant)) {
 			$stmttableSelectPlant->execute();
-			$resultstmttableSelectPlant = $stmttableSelectPlant->get_result();
+			//$resultstmttableSelectPlant = $stmttableSelectPlant->get_result();
 		
-			while($rowresultstmttableSelectPlant = $resultstmttableSelectPlant->fetch_assoc()) {
+			while($rowresultstmttableSelectPlant = $stmttableSelectPlant->fetch()) {
 				echo '<tr id="'.$rowresultstmttableSelectPlant['id_etsim_plant'].'">';
 				echo '<td><input disabled type="text" id="'.$rowresultstmttableSelectPlant['id_etsim_plant'].'" class="id_etsim_plant" value="'.$rowresultstmttableSelectPlant['id_etsim_plant'].'"></td>';
 				echo '<td><select id="'.$rowresultstmttableSelectPlant['id_etsim_plant'].'" class="name_etsim_type_plant">'; 
 				$tableSelectTypePlant = "SELECT * FROM etsim_type_plant;";
 				if ($stmttableSelectTypePlant = $mysqli->prepare($tableSelectTypePlant)) {
 					$stmttableSelectTypePlant->execute();
-					$resultstmttableSelectTypePlant = $stmttableSelectTypePlant->get_result();
-					while($rowresultstmttableSelectTypePlant = $resultstmttableSelectTypePlant->fetch_assoc()) {
+					//$resultstmttableSelectTypePlant = $stmttableSelectTypePlant->get_result();
+					while($rowresultstmttableSelectTypePlant = $stmttableSelectTypePlant->fetch()) {
 						if ( $rowresultstmttableSelectPlant['name_etsim_type_plant'] == $rowresultstmttableSelectTypePlant['name_etsim_type_plant'] ) {	
 							echo '<option id="'.$rowresultstmttableSelectTypePlant['id_etsim_type_plant'].'" value="'.$rowresultstmttableSelectTypePlant['name_etsim_type_plant'].'" selected>"'.$rowresultstmttableSelectPlant['name_etsim_type_plant'].'"</option>';
 						} else {
@@ -115,17 +115,17 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 		} else {
 			$error_msg .= "Error DB access : etsim_plant & etsim_type_plant";
 		}
-		$stmttableSelectPlant->close();
-		$stmttableSelectTypePlant->close();
+		//$stmttableSelectPlant->close();
+		//$stmttableSelectTypePlant->close();
 	}
 
 	function createTableTypePlant($mysqli){
 		$tableSelectTypePlant = "SELECT * FROM etsim_type_plant;";
 		if ($stmttableSelectTypePlant = $mysqli->prepare($tableSelectTypePlant)) {
 			$stmttableSelectTypePlant->execute();
-			$resultstmttableSelectTypePlant = $stmttableSelectTypePlant->get_result();
+			//$resultstmttableSelectTypePlant = $stmttableSelectTypePlant->get_result();
 		
-			while($rowresultstmttableSelectTypePlant = $resultstmttableSelectTypePlant->fetch_assoc()) {
+			while($rowresultstmttableSelectTypePlant = $stmttableSelectTypePlant->fetch()) {
 				echo '<tr id="'.$rowresultstmttableSelectTypePlant['id_etsim_type_plant'].'">';
 				echo '<td><input disabled type="text" id="'.$rowresultstmttableSelectTypePlant['id_etsim_type_plant'].'" class="id_etsim_type_plant" value="'.$rowresultstmttableSelectTypePlant['id_etsim_type_plant'].'"></td>';
 				echo '<td><input type="text" id="'.$rowresultstmttableSelectTypePlant['id_etsim_type_plant'].'" class="name_etsim_type_plant" value="'.$rowresultstmttableSelectTypePlant['name_etsim_type_plant'].'"></td>';
@@ -137,22 +137,22 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 		} else {
 			$error_msg .= "Error DB access : etsim_type_type_plant";
 		}
-		$resultstmttableSelectTypePlant->close();
+		//$resultstmttableSelectTypePlant->close();
 	}
 	
 	function createSelectTypePlant($mysqli){
 		$tableSelectTypePlant = "SELECT * FROM etsim_type_plant;";
 		if ($stmttableSelectTypePlant = $mysqli->prepare($tableSelectTypePlant)) {
 			$stmttableSelectTypePlant->execute();
-			$resultstmttableSelectTypePlant = $stmttableSelectTypePlant->get_result();
+			//$resultstmttableSelectTypePlant = $stmttableSelectTypePlant->get_result();
 		
-			while($rowresultstmttableSelectTypePlant = $resultstmttableSelectTypePlant->fetch_assoc()) {
+			while($rowresultstmttableSelectTypePlant = $stmttableSelectTypePlant->fetch()) {
 				echo '<option id="'.$rowresultstmttableSelectTypePlant['id_etsim_type_plant'].'" value="'.$rowresultstmttableSelectTypePlant['name_etsim_type_plant'].'">'.$rowresultstmttableSelectTypePlant['name_etsim_type_plant'].'</option>';
 			}
 		} else {
 			$error_msg .= "Error DB access : etsim_type_type_plant";
 		}
-		$resultstmttableSelectTypePlant->close();
+		//$resultstmttableSelectTypePlant->close();
 	}
 }
 	if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" || $_SESSION['role'] == "Player" ) {
@@ -274,30 +274,32 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
         }
 		
 		function showtimeround($mysqli, $idGame, $idRound) {
-			if ($SelectLimitDatetimeRound = $mysqli->prepare("SELECT datetime_round_etsim_game_round_datetime FROM etsim_game_round_datetime WHERE id_etsim_game = ? AND round_number_etsim_game_round_datetime = ?;")) {
-				$SelectLimitDatetimeRound->bind_param('ss', $idGame, $idRound);  // Lie "$email" aux paramètres.
+			if ($SelectLimitDatetimeRound = $mysqli->prepare("SELECT datetime_round_etsim_game_round_datetime FROM etsim_game_round_datetime WHERE id_etsim_game = :idEtsimGame AND round_number_etsim_game_round_datetime = :roundNbEtsimGame;")) {
+				$SelectLimitDatetimeRound->bindParam(':idEtsimGame', $idGame);  // Lie "$email" aux paramètres.
+                $SelectLimitDatetimeRound->bindParam(':roundNbEtsimGame', $idRound); 
 				$SelectLimitDatetimeRound->execute();    // Exécute la déclaration.
-				$SelectLimitDatetimeRound->store_result();
-				$SelectLimitDatetimeRound->bind_result($dateEndRound);
+				//$SelectLimitDatetimeRound->store_result();
+				$SelectLimitDatetimeRound->bindColumn('datetime_round_etsim_game_round_datetime',$dateEndRound);
 				$SelectLimitDatetimeRound->fetch();
 				$today = date("Y-m-d H:i:s");
 				$dteDiff  = strtotime($dateEndRound) - strtotime($today);
 				$dteDiff = (int)$dteDiff;
 				return $dteDiff;
 			}
-			$SelectLimitDatetimeRound->close();
+			//$SelectLimitDatetimeRound->close();
 		}
 		
 		function showdemandPowerround($mysqli, $idGame, $idRound) {
-			if ($SelectdemandPower = $mysqli->prepare("SELECT demand_power_per_round FROM etsim_game_round_datetime WHERE id_etsim_game = ? AND round_number_etsim_game_round_datetime = ?;")) {
-				$SelectdemandPower->bind_param('ss', $idGame, $idRound);  // Lie "$email" aux paramètres.
+			if ($SelectdemandPower = $mysqli->prepare("SELECT demand_power_per_round FROM etsim_game_round_datetime WHERE id_etsim_game = :idEtsimGame AND round_number_etsim_game_round_datetime = :roundNbEtsimGame;")) {
+				$SelectdemandPower->bindParam(':idEtsimGame', $idGame);  // Lie "$email" aux paramètres.
+                $SelectdemandPower->bindParam(':roundNbEtsimGame', $idRound); 
 				$SelectdemandPower->execute();    // Exécute la déclaration.
-				$SelectdemandPower->store_result();
-				$SelectdemandPower->bind_result($demandPower);
+				//$SelectdemandPower->store_result();
+				$SelectdemandPower->bindColumn('demand_power_per_round',$demandPower);
 				$SelectdemandPower->fetch();
 				return $demandPower;
 			}
-			$SelectdemandPower->close();
+			//$SelectdemandPower->close();
 		}
 		
 		function countUserTotalInGame($mysqli, $idGame) {
@@ -316,11 +318,12 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 		
 		function countUserTotalInGameFinnishRound($mysqli, $idGame, $idRound) {
 			$countUserTotalInGameFinnishRound = 0;
-			if ($SelectcountUserTotalInGameFinnishRound = $mysqli->prepare("SELECT * FROM etsim_round_game_temp WHERE idetsimgame_etsim_round_game_temp = ? AND number_etsim_round_game_temp = ? AND finnish_etsim_round_game_temp = 1 GROUP BY idetsimgame_etsim_round_game_temp, 	idetsimmember_etsim_round_game_temp, number_etsim_round_game_temp, finnish_etsim_round_game_temp ORDER BY number_etsim_round_game_temp;")) {
-				$SelectcountUserTotalInGameFinnishRound->bind_param('ss', $idGame, $idRound);
+			if ($SelectcountUserTotalInGameFinnishRound = $mysqli->prepare("SELECT * FROM etsim_round_game_temp WHERE idetsimgame_etsim_round_game_temp = :idEtsimGame AND number_etsim_round_game_temp = :nbEtsimRound AND finnish_etsim_round_game_temp = 1 GROUP BY idetsimgame_etsim_round_game_temp, 	idetsimmember_etsim_round_game_temp, number_etsim_round_game_temp, finnish_etsim_round_game_temp ORDER BY number_etsim_round_game_temp;")) {
+				$SelectcountUserTotalInGameFinnishRound->bindParam(':idEtsimGame', $idGame);
+                $SelectcountUserTotalInGameFinnishRound->bindParam(':nbEtsimRound', $idRound);
 				$SelectcountUserTotalInGameFinnishRound->execute();
 				//$resultSelectcountUserTotalInGameFinnishRound = $SelectcountUserTotalInGameFinnishRound->get_result();
-						while($rowresultSelectcountUserTotalInGameFinnishRound = $resultSelectcountUserTotalInGameFinnishRound->fetch_assoc()) {
+						while($rowresultSelectcountUserTotalInGameFinnishRound = $SelectcountUserTotalInGameFinnishRound->fetch()) {
 							$countUserTotalInGameFinnishRound++;
 						}
 				return $countUserTotalInGameFinnishRound;
@@ -329,15 +332,17 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 		}
 		
 		function statusCurrentRoundGame($mysqli, $idGame, $idRound) {
-			if ($SelectcountUserInGameFinnishRound = $mysqli->prepare("SELECT finnish_etsim_round_game_temp FROM etsim_round_game_temp WHERE idetsimgame_etsim_round_game_temp = ? AND number_etsim_round_game_temp = ? AND idetsimmember_etsim_round_game_temp = ? GROUP BY finnish_etsim_round_game_temp ORDER BY number_etsim_round_game_temp")) {
-				$SelectcountUserInGameFinnishRound->bind_param('sss', $idGame, $idRound, $_SESSION['user_id']);
+			if ($SelectcountUserInGameFinnishRound = $mysqli->prepare("SELECT finnish_etsim_round_game_temp FROM etsim_round_game_temp WHERE idetsimgame_etsim_round_game_temp = :idEtsimGame AND number_etsim_round_game_temp = :nbEtsimRound AND idetsimmember_etsim_round_game_temp = :idEtsimMember GROUP BY finnish_etsim_round_game_temp ORDER BY number_etsim_round_game_temp")) {
+				$SelectcountUserInGameFinnishRound->bindParam(':idEtsimGame', $idGame);
+                $SelectcountUserInGameFinnishRound->bindParam(':nbEtsimRound', $idRound);
+                $SelectcountUserInGameFinnishRound->bindParam(':idEtsimMember', $_SESSION['user_id']);
 				$SelectcountUserInGameFinnishRound->execute();
-				$SelectcountUserInGameFinnishRound->store_result();
-				$SelectcountUserInGameFinnishRound->bind_result($statusRoundForUser);
+				//$SelectcountUserInGameFinnishRound->store_result();
+				$SelectcountUserInGameFinnishRound->bindColumn('finnish_etsim_round_game_temp',$statusRoundForUser);
 				$SelectcountUserInGameFinnishRound->fetch();
 				return $statusRoundForUser;
 			}
-			$SelectcountUserInGameFinnishRound->close();
+			//$SelectcountUserInGameFinnishRound->close();
 		}
 		
 		function applyRoundGame($mysqli, $idGame, $idRound) {

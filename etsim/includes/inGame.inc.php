@@ -38,13 +38,13 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
 ";
 		if( $stmttableSelectGameResults = $mysqli->prepare($tableSelectGameResults) ) {
 			$stmttableSelectGameResults->execute();
-			$resultstmttableSelectGameResults = $stmttableSelectGameResults->get_result();
+			//$resultstmttableSelectGameResults = $stmttableSelectGameResults->get_result();
 			$roundarray=[];
 			$costarray=[];
 			$profitarray=[];
 			$benefarray=[];
 			$capital=0;
-			while($rowresultstmttableSelectGameResults = $resultstmttableSelectGameResults->fetch_assoc()) {
+			while($rowresultstmttableSelectGameResults = $stmttableSelectGameResults->fetch()) {
 				$idRoundGame = $rowresultstmttableSelectGameResults['id_round_etsim_game'];
 				$roundarray[]=$rowresultstmttableSelectGameResults['number_etsim_round_game'];
 				$costarray[]=$rowresultstmttableSelectGameResults['cost_etsim_round_game'];
@@ -94,17 +94,18 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
 
 		}
 
-		$stmttableSelectGameResults->close();
+		//$stmttableSelectGameResults->close();
 	}
 	
 	function CurrentGamePlants($mysqli, $idGame) {
-		$tableSelectPlantMember = "SELECT id_etsim_plant_game_contains FROM can_contains WHERE id_etsim_game = ? AND id_etsim_members = ? GROUP BY id_etsim_plant_game_contains ORDER BY id_etsim_plant_game_contains;";
+		$tableSelectPlantMember = "SELECT id_etsim_plant_game_contains FROM can_contains WHERE id_etsim_game = :idEtsimGame AND id_etsim_members = :idEtsimMeber GROUP BY id_etsim_plant_game_contains ORDER BY id_etsim_plant_game_contains;";
 		if( $stmttableSelectPlantMemberResults = $mysqli->prepare($tableSelectPlantMember) ) {
-            $stmttableSelectPlantMemberResults->bind_param('ss', $idGame, $_SESSION['user_id']);
+            $stmttableSelectPlantMemberResults->bindParam(':idEtsimGame', $idGame);
+            $stmttableSelectPlantMemberResults->bindParam(':idEtsimMeber', $_SESSION['user_id']);
 			$stmttableSelectPlantMemberResults->execute();
-			$resultstmttableSelectPlantMemberResults = $stmttableSelectPlantMemberResults->get_result();
+			//$resultstmttableSelectPlantMemberResults = $stmttableSelectPlantMemberResults->get_result();
 			$i = 0;
-			while($rowresultstmttableSelectPlantMemberResults = $resultstmttableSelectPlantMemberResults->fetch_assoc()) {
+			while($rowresultstmttableSelectPlantMemberResults = $stmttableSelectPlantMemberResults->fetch()) {
 				$SelectShowPlant = "SELECT  ep.*,
 											etp.*,
 											ha.v_costs_etsim_members_have
@@ -115,15 +116,16 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
 											ON it.id_etsim_type_plant = etp.id_etsim_type_plant 
 										INNER JOIN have ha
 											ON ep.id_etsim_plant = ha.id_etsim_plant
-									WHERE ep.id_etsim_plant = ? 
-									AND ha.id_etsim_members_have = ?
+									WHERE ep.id_etsim_plant = :idEtsimPlant 
+									AND ha.id_etsim_members_have = :idEtsimMemberHave
 									GROUP BY ep.id_etsim_plant
 									ORDER BY ep.id_etsim_plant;";
 				if( $stmtSelectShowPlant = $mysqli->prepare($SelectShowPlant) ) {
-					$stmtSelectShowPlant->bind_param('ss', $rowresultstmttableSelectPlantMemberResults['id_etsim_plant_game_contains'], $_SESSION['user_id']);
+					$stmtSelectShowPlant->bindParam(':idEtsimPlant', $rowresultstmttableSelectPlantMemberResults['id_etsim_plant_game_contains']);
+                    $stmtSelectShowPlant->bindParam(':idEtsimMemberHave', $_SESSION['user_id']);
 					$stmtSelectShowPlant->execute();
-					$resultstmtSelectShowPlant = $stmtSelectShowPlant->get_result();
-					while($rowresultstmtSelectShowPlant = $resultstmtSelectShowPlant->fetch_assoc()) {
+					//$resultstmtSelectShowPlant = $stmtSelectShowPlant->get_result();
+					while($rowresultstmtSelectShowPlant = $stmtSelectShowPlant->fetch()) {
 						echo '<tr><input type="hidden" id="'.$rowresultstmtSelectShowPlant['id_etsim_plant'].'" name="name_etsim_type_plant" value="'.$rowresultstmtSelectShowPlant['name_etsim_type_plant'].'">
 								  <input type="hidden" id="'.$rowresultstmtSelectShowPlant['id_etsim_plant'].'" name="cost_mw_etsim_plant" value="'.$rowresultstmtSelectShowPlant['cost_mw_etsim_plant'].'">
 								  <input type="hidden" id="'.$rowresultstmtSelectShowPlant['id_etsim_plant'].'" name="om_mw_etsim_plant" value="'.$rowresultstmtSelectShowPlant['om_mw_etsim_plant'].'">
@@ -144,12 +146,12 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
 				} else {
 					$error_msg .= "Error create table current plant of user !";
 				}
-				$stmtSelectShowPlant->close();
+				//$stmtSelectShowPlant->close();
 			}
 		} else {
 			$error_msg .= "Error select id plant !";
 		}
-		$stmttableSelectPlantMemberResults->close();
+		//$stmttableSelectPlantMemberResults->close();
 	}
 
 	function GameRoundNumber($mysqli, $idGame) {
