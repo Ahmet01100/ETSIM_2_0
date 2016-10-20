@@ -53,7 +53,6 @@ function login($login, $password, $mysqli) {
         //$stmt->store_result();
  
         // Récupère les variables dans le résultat
-        
         $stmt->bindColumn('id_etsim_members',$user_id);
         $stmt->bindColumn('username_etsim_members', $username);
         $stmt->bindColumn('email_etsim_members', $email);
@@ -61,7 +60,10 @@ function login($login, $password, $mysqli) {
         $stmt->bindColumn('salt_etsim_members', $salt);
         $stmt->bindColumn('role_etsim_members', $role);
         $stmt->bindColumn('group_etsim_members', $group);
+        
+        
         $stmt->fetch();
+        
 		// echo "$salt <br />";
 		// echo "$db_password <br />";
 		$salt = trim($salt);
@@ -78,7 +80,7 @@ function login($login, $password, $mysqli) {
 
 		# On doit supprimer les caractères de valeur 00h de la fin du texte plein
 		$decryptpassword = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $salt, $ciphertext_dec, MCRYPT_MODE_CBC, $iv_dec);
-        if ($stmt->num_rows == 1) {
+        if ($stmt->rowCount() == 1) {
             // Si l’utilisateur existe, le script vérifie qu’il n’est pas verrouillé
             // à cause d’essais de connexion trop répétés
 			// $search="SELECT id_etsim_members
@@ -94,10 +96,10 @@ function login($login, $password, $mysqli) {
                 // Le compte est verrouillé 
                 // Envoie un email à l’utilisateur l’informant que son compte est verrouillé
 				if (empty($error_msg)) {
-					if ($stmtbrut = $mysqli->prepare("UPDATE etsim_members SET enable_etsim_members = '0' WHERE id_etsim_members = ?")) {
+					if ($stmtbrut = $mysqli->prepare("UPDATE etsim_members SET enable_etsim_members = '0' WHERE id_etsim_members = :id")) {
 						//echo "Echec de la préparation : (" . $mysqli->errno . ") " . $mysqli->error;
 						//echo 'Vérouillé';
-						$stmtbrut->bind_param('s', $user_id);  // Lie "$email" aux paramètres.
+						$stmtbrut->bindParam(':id', $user_id);  // Lie "$email" aux paramètres.
 						$stmtbrut->execute();    // Exécute la déclaration.
 						$error_msg .= '<p class="error">Yours has been disabled. Contact Administrator for resolve !</p>';
 						$message = "	Dear Mr. ROCHE
