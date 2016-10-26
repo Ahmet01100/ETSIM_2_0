@@ -6,7 +6,8 @@
 */
 	include_once 'db_connect.php';
 	include_once 'functions.php';
-	sec_session_start();
+	if(!isset($_SESSION))
+        sec_session_start();
 
 if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" || $_SESSION['role'] == "Player" ) {
 	if(isset($_GET['jgame_id']) && isset($_GET['jpassword']) ) {
@@ -18,15 +19,17 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" || $_SESSION[
 											   ,password_etsim_game
 											   ,salt_etsim_game
 										FROM etsim_game
-										WHERE id_etsim_game = ?
+										WHERE id_etsim_game = :idGame
 										LIMIT 1")) {
 			//echo "Echec de la préparation : (" . $mysqli->errno . ") " . $mysqli->error;
-			$stmtSelectGame->bind_param('s', $idgame);  // Lie "$email" aux paramètres.
+			$stmtSelectGame->bindParam(':idGame', $idgame);  
 			$stmtSelectGame->execute();    // Exécute la déclaration.
-			$stmtSelectGame->store_result();
+			//$stmtSelectGame->store_result();
 	 
 			// Récupère les variables dans le résultat
-			$stmtSelectGame->bind_result($game_id, $game_db_password, $game_salt);
+			$stmtSelectGame->bindColumn('id_etsim_game',$game_id);
+            $stmtSelectGame->bindColumn('password_etsim_game',$game_db_password);
+            $stmtSelectGame->bindColumn('salt_etsim_game',$game_salt);
 			$stmtSelectGame->fetch();
 			$game_salt = trim($game_salt);
 			# Crée un IV aléatoire à utiliser avec l'encodage CBC
@@ -47,8 +50,8 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" || $_SESSION[
 				$round = "0";
 				if ($stmtSelectCountPLant = $mysqli->prepare("SELECT count(*) as totalPlant FROM etsim_plant;")) {
 					$stmtSelectCountPLant->execute();
-					$stmtSelectCountPLant->store_result();
-					$stmtSelectCountPLant->bind_result($totalCount);
+					//$stmtSelectCountPLant->store_result();
+					$stmtSelectCountPLant->bindColumn('totalPlant',$totalCount);
 					$stmtSelectCountPLant->fetch();
 					$stack = array();
 					for($z=0;$z<5;$z++) {
@@ -56,8 +59,11 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" || $_SESSION[
 						while (in_array($randomIndex, $stack, true)) {
 							$randomIndex = rand(1,$totalCount);
 						}
-						if ($stmtInsertUserGame = $mysqli->prepare("INSERT INTO can_contains (id_etsim_plant_game_contains, id_etsim_game, id_etsim_members, id_etsim_round_game) VALUES (?, ?, ?, ?);")) {
-							$stmtInsertUserGame->bind_param('ssss', $randomIndex, $idgame, $memberID, $round); 
+						if ($stmtInsertUserGame = $mysqli->prepare("INSERT INTO can_contains (id_etsim_plant_game_contains, id_etsim_game, id_etsim_members, id_etsim_round_game) VALUES (:randIndex, :idGame, idMember, :idRound);")) {
+							$stmtInsertUserGame->bindParam(':randIndex', $randomIndex); 
+                            $stmtInsertUserGame->bindParam(':idGame', $idgame); 
+                            $stmtInsertUserGame->bindParam(':idMember', $memberID); 
+                            $stmtInsertUserGame->bindParam(':idRound', $round); 
 							$stmtInsertUserGame->execute();
 							if ($selectinfoPlant = $mysqli->prepare("SELECT ep.rdt_etsim_plant, etp.minv_costs_etsim_type_plant, etp.maxv_costs_etsim_type_plant
 																	 FROM etsim_plant ep
@@ -65,11 +71,14 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" || $_SESSION[
 																		ON ep.id_etsim_plant = it.id_etsim_plant
 																	 INNER JOIN etsim_type_plant etp
 																		ON it.id_etsim_type_plant = etp.id_etsim_type_plant 
-																	 WHERE ep.id_etsim_plant = ?;")) {
-								$selectinfoPlant->bind_param('s', $randomIndex);
+																	 WHERE ep.id_etsim_plant = :idPlant;")) {
+								$selectinfoPlant->bindParam(':idPlant', $randomIndex);
 								$selectinfoPlant->execute();
-								$selectinfoPlant->store_result();
-								$selectinfoPlant->bind_result($rdt, $minc, $maxc);
+								//$selectinfoPlant->store_result();
+                                $selectinfoPlant->bindColumn('rdt_etsim_plant',$rdt);
+                                $selectinfoPlant->bindColumn('minv_costs_etsim_type_plant',$minc);
+                                $selectinfoPlant->bindColumn('maxv_costs_etsim_type_plant',$maxc);
+								
 								$selectinfoPlant->fetch();
 								if ( $minc == $maxc ) {
 									$varCost =  ($maxc/$rdt);
@@ -77,10 +86,13 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" || $_SESSION[
 									$randc = rand($minc,$maxc);
 									$varCost = ($randc/$rdt);
 								}
-								if ($stmtInsertVcost = $mysqli->prepare("INSERT INTO have (id_etsim_members_have, v_costs_etsim_members_have, id_etsim_plant, id_etsim_game) VALUES (?, ?, ?, ?);")) {
-									$stmtInsertVcost->bind_param('ssss', $memberID, $varCost, $randomIndex, $idgame);
+								if ($stmtInsertVcost = $mysqli->prepare("INSERT INTO have (id_etsim_members_have, v_costs_etsim_members_have, id_etsim_plant, id_etsim_game) VALUES (:idMember, :vCost, :idPlant, :idGame);")) {
+									$stmtInsertVcost->bind_param(':idMember', $memberID);
+                                    $stmtInsertVcost->bind_param(':vCost', $varCost);
+                                    $stmtInsertVcost->bind_param(':idPlant', $randomIndex);
+                                    $stmtInsertVcost->bind_param(':idGame', $idgame);
 									$stmtInsertVcost->execute();
-									$stmtInsertVcost->close();
+									//s$stmtInsertVcost->close();
 								} else {
 									$error_msg .= "Error insert HAVE vcosts!";
 								}						
@@ -96,9 +108,9 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" || $_SESSION[
 				} else {
 					$error_msg .= "Error random !";
 				}
-				$stmtSelectCountPLant->close();
+				/*$stmtSelectCountPLant->close();
 				$stmtInsertUserGame->close();
-				$selectinfoPlant->close();
+				$selectinfoPlant->close();*/
 			} else {
 				echo "FAUX";
 				$error_msg .= "Error password !";

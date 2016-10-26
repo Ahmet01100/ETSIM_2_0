@@ -2,7 +2,8 @@
 include_once 'includes/db_connect.php';
 include_once 'includes/functions.php';
  
-sec_session_start();
+if(!isset($_SESSION))
+    sec_session_start();
  
 ?>
 <!DOCTYPE HTML>
@@ -82,6 +83,5 @@ sec_session_start();
 
 			</div>
 
-		</div>
 	</body>
 </html>

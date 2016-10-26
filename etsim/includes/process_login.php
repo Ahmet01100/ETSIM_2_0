@@ -7,7 +7,8 @@
 include 'db_connect.php';
 include 'functions.php';
  
-sec_session_start(); // Notre façon personnalisée de démarrer la session PHP
+if(!isset($_SESSION))
+    sec_session_start(); // Notre façon personnalisée de démarrer la session PHP
 if (isset($_POST['formlogin']) && $_POST['formlogin'] == 'formlogin') {
 	 if (isset($_POST['login'], $_POST['password'])) {
 		$login = $_POST['login'];

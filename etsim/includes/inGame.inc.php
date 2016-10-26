@@ -155,12 +155,13 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
 	}
 
 	function GameRoundNumber($mysqli, $idGame) {
-		$SelectCountNumber = "SELECT id_etsim_round_game FROM can_contains WHERE id_etsim_game = ? AND id_etsim_members = ? GROUP BY id_etsim_round_game ORDER BY id_etsim_round_game DESC limit 1;";
+		$SelectCountNumber = "SELECT id_etsim_round_game FROM can_contains WHERE id_etsim_game = :idGame AND id_etsim_members = :idUser GROUP BY id_etsim_round_game ORDER BY id_etsim_round_game DESC limit 1;";
 		if( $stmtSelectCountNumber = $mysqli->prepare($SelectCountNumber) ) {
-            $stmtSelectCountNumber->bind_param('ss', $idGame, $_SESSION['user_id']);
+            $stmtSelectCountNumber->bindParam(':idGame', $idGame);
+            $stmtSelectCountNumber->bindParam(':idUser', $_SESSION['user_id']);
 			$stmtSelectCountNumber->execute();
-			$stmtSelectCountNumber->store_result();
-			$stmtSelectCountNumber->bind_result($totalCountRound);
+			//$stmtSelectCountNumber->store_result();
+			$stmtSelectCountNumber->bindColumn('id_etsim_round_game',$totalCountRound);
 			$stmtSelectCountNumber->fetch();
 			$totalCountRound = $totalCountRound + 1;
 			echo $totalCountRound;
@@ -184,18 +185,23 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
 															`capital_etsim_round_game_temp`,
 															`idplant_etsim_round_game_temp`,
 															`finnish_etsim_round_game_temp`)
-						VALUES (?, ?, ?, 1, 1, 1, ?, 1, 1, 1, 1, 1, ?, 0);";
-		$SelectCountNumber = "SELECT id_etsim_plant_game_contains FROM can_contains WHERE id_etsim_game = ? AND id_etsim_members = ? GROUP BY id_etsim_round_game ORDER BY id_etsim_round_game DESC limit 1;";
+						VALUES (:idEtsimGame, :idUser, :nbRound, 1, 1, 1, :demand, 1, 1, 1, 1, 1, :idEtsim, 0);";
+		$SelectCountNumber = "SELECT id_etsim_plant_game_contains FROM can_contains WHERE id_etsim_game = :idGame AND id_etsim_members = :idMember GROUP BY id_etsim_round_game ORDER BY id_etsim_round_game DESC limit 1;";
 		if( $stmtSelectCountNumber = $mysqli->prepare($SelectCountNumber) ) {
-            $stmtSelectCountNumber->bind_param('ss', $idGame, $_SESSION['user_id']);
+            $stmtSelectCountNumber->bindParam(':idGame', $idGame);
+            $stmtSelectCountNumber->bindParam(':idMember', $_SESSION['user_id']);
 			$stmtSelectCountNumber->execute();
-			$stmtSelectCountNumber->store_result();
-			$stmtSelectCountNumber->bind_result($id_etsim);
+			//$stmtSelectCountNumber->store_result();
+			$stmtSelectCountNumber->bindColumn('id_etsim_plant_game_contains',$id_etsim);
 			$stmtSelectCountNumber->fetch();
-			$stmtSelectCountNumber->close();
+			//$stmtSelectCountNumber->close();
 		}
 		if( $stmtinsertRound = $mysqli->prepare($insertRound) ) {
-            $stmtinsertRound->bind_param('sssss', $idGame, $_SESSION['user_id'], $numberRoundGame, $demand, $id_etsim);
+            $stmtinsertRound->bindParam(':idEtsimGame', $idGame);
+            $stmtinsertRound->bindParam(':idUser', $_SESSION['user_id']);
+            $stmtinsertRound->bindParam(':nbRound', $numberRoundGame);
+            $stmtinsertRound->bindParam(':demand', $demand);
+            $stmtinsertRound->bindParam(':idEtsim', $id_etsim);
 			$stmtinsertRound->execute();
 		} else {
 			$error_msg .= 'Error insert new rows !';
@@ -207,25 +213,28 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
 								`bid_volume_etsim_round_game_temp`, 
 								`bid_price_etsim_round_game_temp` 
 						FROM `etsim_round_game_temp` 
-						WHERE `idetsimgame_etsim_round_game_temp` = ?
-						AND `idetsimmember_etsim_round_game_temp` = ?
-						AND `number_etsim_round_game_temp` = ?;";
+						WHERE `idetsimgame_etsim_round_game_temp` = :idGame
+						AND `idetsimmember_etsim_round_game_temp` = :userId
+						AND `number_etsim_round_game_temp` = :nbRound;";
 		if( $stmtSelectRound = $mysqli->prepare($SelectRound) ) {
-            $stmtSelectRound->bind_param('sss', $idGame, $_SESSION['user_id'], $numberRoundGame);
+            $stmtSelectRound->bindParam(':idGame', $idGame);
+            $stmtSelectRound->bindParam(':userId', $_SESSION['user_id']);
+            $stmtSelectRound->bindParam(':nbRound', $numberRoundGame);
 			$stmtSelectRound->execute();
-			$resultstmtSelectRound = $stmtSelectRound->get_result();
+			//$resultstmtSelectRound = $stmtSelectRound->get_result();
 			$i = 1;
-			while($rowresultstmtSelectRound = $resultstmtSelectRound->fetch_assoc()) {
+			while($rowresultstmtSelectRound = $stmtSelectRound->fetch()) {
 				echo '<tr><td><input disabled type="number" name="offerInGame" class="line_etsim_round_game_temp" id="'.$rowresultstmtSelectRound['line_etsim_round_game_temp'].'" value="'.$rowresultstmtSelectRound['line_etsim_round_game_temp'].'"/><br></td>';
 				echo '<td><input type="number" name="volumeInGame" class="bid_volume_etsim_round_game_temp" id="'.$rowresultstmtSelectRound['line_etsim_round_game_temp'].'" placeholder="500" x-moz-errormessage="VOLUME IS REQUIRED!" required="required" autofocus="autofocus" value="'.$rowresultstmtSelectRound['bid_volume_etsim_round_game_temp'].'"/><br></td>';
 				echo '<td><input type="number" name="priceInGame" class="bid_price_etsim_round_game_temp" id="'.$rowresultstmtSelectRound['line_etsim_round_game_temp'].'" placeholder="200" x-moz-errormessage="PRICE IS REQUIRED!" required="required" autofocus="autofocus" value="'.$rowresultstmtSelectRound['bid_price_etsim_round_game_temp'].'"/><br></td>';
 				echo '<td><select id="'.$rowresultstmtSelectRound['line_etsim_round_game_temp'].'" class="ListeBoxPlants">';
-				$tableSelectPlantMember = "SELECT id_etsim_plant_game_contains FROM can_contains WHERE id_etsim_game = ? AND id_etsim_members = ? GROUP BY id_etsim_plant_game_contains ORDER BY id_etsim_plant_game_contains;";
+				$tableSelectPlantMember = "SELECT id_etsim_plant_game_contains FROM can_contains WHERE id_etsim_game = :idGame AND id_etsim_members = :idUser GROUP BY id_etsim_plant_game_contains ORDER BY id_etsim_plant_game_contains;";
 				if( $stmttableSelectPlantMemberResults = $mysqli->prepare($tableSelectPlantMember) ) {
-					$stmttableSelectPlantMemberResults->bind_param('ss', $idGame, $_SESSION['user_id']);
+					$stmttableSelectPlantMemberResults->bindParam(':idGame', $idGame);
+                    $stmttableSelectPlantMemberResults->bindParam(':idUser', $_SESSION['user_id']);
 					$stmttableSelectPlantMemberResults->execute();
-					$resultstmttableSelectPlantMemberResults = $stmttableSelectPlantMemberResults->get_result();
-					while($rowresultstmttableSelectPlantMemberResults = $resultstmttableSelectPlantMemberResults->fetch_assoc()) {
+					//$resultstmttableSelectPlantMemberResults = $stmttableSelectPlantMemberResults->get_result();
+					while($rowresultstmttableSelectPlantMemberResults = $stmttableSelectPlantMemberResults->fetch()) {
 						$SelectShowPlant = "SELECT  ep.*,
 													etp.*,
 													ha.v_costs_etsim_members_have
@@ -236,15 +245,16 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
 													ON it.id_etsim_type_plant = etp.id_etsim_type_plant 
 												INNER JOIN have ha
 													ON ep.id_etsim_plant = ha.id_etsim_plant
-											WHERE ep.id_etsim_plant = ? 
-											AND ha.id_etsim_members_have = ?
+											WHERE ep.id_etsim_plant = :idEtsimPlant 
+											AND ha.id_etsim_members_have = :idMember
 											GROUP BY ep.id_etsim_plant
 											ORDER BY ep.id_etsim_plant;";
 						if( $stmtSelectShowPlant = $mysqli->prepare($SelectShowPlant) ) {
-							$stmtSelectShowPlant->bind_param('ss', $rowresultstmttableSelectPlantMemberResults['id_etsim_plant_game_contains'], $_SESSION['user_id']);
+							$stmtSelectShowPlant->bindParam(':idEtsimPlant', $rowresultstmttableSelectPlantMemberResults['id_etsim_plant_game_contains']);
+                            $stmtSelectShowPlant->bindParam(':idMember', $_SESSION['user_id']);
 							$stmtSelectShowPlant->execute();
-							$resultstmtSelectShowPlant = $stmtSelectShowPlant->get_result();
-							while($rowresultstmtSelectShowPlant = $resultstmtSelectShowPlant->fetch_assoc()) {
+							//$resultstmtSelectShowPlant = $stmtSelectShowPlant->get_result();
+							while($rowresultstmtSelectShowPlant = $stmtSelectShowPlant->fetch()) {
 								$plant = $rowresultstmtSelectShowPlant['name_etsim_type_plant'].' - '.$rowresultstmtSelectShowPlant['nb_unit_etsim_plant'].' UNITS - '.$rowresultstmtSelectShowPlant['power_unit_etsim_plant'].'MW';
 								$IdPlantO = $rowresultstmttableSelectPlantMemberResults['id_etsim_plant_game_contains'];
 								$name[] = $plant;
@@ -253,16 +263,19 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
 							}
 							$SelectIdPlantLine = "	SELECT idplant_etsim_round_game_temp 
 														FROM etsim_round_game_temp 
-														WHERE idetsimgame_etsim_round_game_temp = ?
-														AND idetsimmember_etsim_round_game_temp = ?
-														AND number_etsim_round_game_temp = ?
-														AND line_etsim_round_game_temp = ?;";
+														WHERE idetsimgame_etsim_round_game_temp = :idGame
+														AND idetsimmember_etsim_round_game_temp = :idMember
+														AND number_etsim_round_game_temp = :nbRoundGame
+														AND line_etsim_round_game_temp = :lineEtsim;";
 														
 							if( $stmtSelectIdPlantLine = $mysqli->prepare($SelectIdPlantLine) ) {
-								$stmtSelectIdPlantLine->bind_param('ssss', $idGame, $_SESSION['user_id'], $numberRoundGame, $i);
+								$stmtSelectIdPlantLine->bindParam(':idGame', $idGame);
+                                $stmtSelectIdPlantLine->bindParam(':idMember',$_SESSION['user_id']);
+                                $stmtSelectIdPlantLine->bindParam(':nbRoundGame', $numberRoundGame);
+                                $stmtSelectIdPlantLine->bindParam(':lineEtsim', $i);
 								$stmtSelectIdPlantLine->execute();
-								$stmtSelectIdPlantLine->store_result();
-								$stmtSelectIdPlantLine->bind_result($IdPlant);
+								//$stmtSelectIdPlantLine->store_result();
+								$stmtSelectIdPlantLine->bindColumn('idplant_etsim_round_game_temp',$IdPlant);
 								$stmtSelectIdPlantLine->fetch();
 							}
 							foreach ($tab1 as $key => $value) {
@@ -288,12 +301,12 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
 						} else {
 							$error_msg .= "Error create table current plant of user !";
 						}
-						$stmtSelectShowPlant->close();
+						//$stmtSelectShowPlant->close();
 					}
 				} else {
 					$error_msg .= "Error select id plant !";
 				}
-				$stmttableSelectPlantMemberResults->close();
+				//$stmttableSelectPlantMemberResults->close();
 				$i++;
 				echo '</select></td></tr>';
 			}
@@ -308,28 +321,32 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
 
 	}
 	function SelectLineRoundGameUser($mysqli, $idGame, $numberRoundGame){
-		if ($SelectLineRound = $mysqli->prepare("SELECT line_etsim_round_game_temp FROM etsim_round_game_temp WHERE idetsimgame_etsim_round_game_temp = ? AND idetsimmember_etsim_round_game_temp = ? AND number_etsim_round_game_temp = ? ORDER BY line_etsim_round_game_temp DESC LIMIT 1;")) {
-			$SelectLineRound->bind_param('sss', $idGame, $_SESSION['user_id'], $numberRoundGame);  // Lie "$email" aux paramètres.
+		if ($SelectLineRound = $mysqli->prepare("SELECT line_etsim_round_game_temp FROM etsim_round_game_temp WHERE idetsimgame_etsim_round_game_temp = :idGame AND idetsimmember_etsim_round_game_temp = :idUser AND number_etsim_round_game_temp = :nbRound ORDER BY line_etsim_round_game_temp DESC LIMIT 1;")) {
+			$SelectLineRound->bindParam(':idGame', $idGame); 
+            $SelectLineRound->bindParam(':idUser', $_SESSION['user_id']);  
+            $SelectLineRound->bindParam(':nbRound', $numberRoundGame);  
 			$SelectLineRound->execute();    // Exécute la déclaration.
-			$SelectLineRound->store_result();
-			$SelectLineRound->bind_result($lineround);
+			//$SelectLineRound->store_result();
+			$SelectLineRound->bindColumn('line_etsim_round_game_temp',$lineround);
 			$SelectLineRound->fetch();
 			$lineround = $lineround+1;
 			return $lineround;
 		}
-		$SelectLineRound->close();
+		//$SelectLineRound->close();
 	}
 	
 	function DeleteLineRoundGameUser($mysqli, $idGame, $numberRoundGame){
-		if ($SelectLineRound = $mysqli->prepare("SELECT line_etsim_round_game_temp FROM etsim_round_game_temp WHERE idetsimgame_etsim_round_game_temp = ? AND idetsimmember_etsim_round_game_temp = ? AND number_etsim_round_game_temp = ? ORDER BY line_etsim_round_game_temp DESC LIMIT 1;")) {
-			$SelectLineRound->bind_param('sss', $idGame, $_SESSION['user_id'], $numberRoundGame);  // Lie "$email" aux paramètres.
+		if ($SelectLineRound = $mysqli->prepare("SELECT line_etsim_round_game_temp FROM etsim_round_game_temp WHERE idetsimgame_etsim_round_game_temp = :idGame AND idetsimmember_etsim_round_game_temp = :idUser AND number_etsim_round_game_temp = :nbRound ORDER BY line_etsim_round_game_temp DESC LIMIT 1;")) {
+			$SelectLineRound->bindParam(':idGame', $idGame); 
+            $SelectLineRound->bindParam(':idUser', $_SESSION['user_id']); 
+            $SelectLineRound->bindParam(':nbRound', $numberRoundGame); 
 			$SelectLineRound->execute();    // Exécute la déclaration.
-			$SelectLineRound->store_result();
-			$SelectLineRound->bind_result($lineround);
+			//$SelectLineRound->store_result();
+			$SelectLineRound->bindColumn('line_etsim_round_game_temp',$lineround);
 			$SelectLineRound->fetch();
 			return $lineround;
 		}
-		$SelectLineRound->close();
+		//$SelectLineRound->close();
 	}
 	function getMinPrice($idGame){
 
@@ -339,15 +356,16 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
 	}
 	function getBidPriceAndVolume($mysqli,$idGame,$idround){
 		$result=[];
-		if($selectBidPriceandVolume=$mysqli->prepare("select idetsimmember_etsim_round_game_temp, line_etsim_round_game_temp,bid_volume_estim_round_game_temp,bid_price_estim_round_game_temp from estim_round_game_temp where idetsimgame_etsim_round_game_temp= ? and number_etsim_round_game_temp = ? ")){
-			$selectBidPriceandVolume->bind_param('ss',$idGame,$idround);
+		if($selectBidPriceandVolume=$mysqli->prepare("select idetsimmember_etsim_round_game_temp, line_etsim_round_game_temp,bid_volume_estim_round_game_temp,bid_price_estim_round_game_temp from estim_round_game_temp where idetsimgame_etsim_round_game_temp= :idGame and number_etsim_round_game_temp = :idRound ")){
+			$selectBidPriceandVolume->bindParam(':idGame',$idGame);
+            $selectBidPriceandVolume->bindParam(':idRound',$idround);
 			$selectBidPriceandVolume->execute();
-			$selectBidPriceandVolume->store_result();
-			$selectBidPriceandVolume->bind_result($result);
+			//$selectBidPriceandVolume->store_result();
+			$selectBidPriceandVolume->bindColumn('idetsimmember_etsim_round_game_temp',$result);
 			$selectBidPriceandVolume->fetch();
 			return $result;
 		}
-		$selectBidPriceandVolume->close();
+		//$selectBidPriceandVolume->close();
 	}
 }
 

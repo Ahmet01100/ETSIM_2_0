@@ -5,7 +5,8 @@
 * date * 15-10-2015
 */
 include_once 'functions.php';
-sec_session_start();
+if(!isset($_SESSION))
+    sec_session_start();
  
 // Détruisez les variables de session 
 $_SESSION = array();

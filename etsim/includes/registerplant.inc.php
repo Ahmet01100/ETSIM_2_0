@@ -6,7 +6,8 @@
 */
 include_once 'db_connect.php';
 include_once 'functions.php';
-sec_session_start();
+if(!isset($_SESSION))
+    sec_session_start();
  
 if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 	if (isset($_POST['registerplant']) && $_POST['registerplant'] == 'registerplant') {
@@ -32,34 +33,34 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 					$sqlselecttypeplantid = "SELECT id_etsim_type_plant FROM etsim_type_plant WHERE name_etsim_type_plant = '$nameplant';";
 					if ( $selectPlantId_stmt = $mysqli->prepare($sqlselectplantid) ) {
 						$selectPlantId_stmt->execute();
-						$resultselectPlantId_stmt = $selectPlantId_stmt->get_result();
-						while($rowresultselectPlantId_stmt = $resultselectPlantId_stmt->fetch_assoc()) {
+						//$resultselectPlantId_stmt = $selectPlantId_stmt->get_result();
+						while($rowresultselectPlantId_stmt = $selectPlantId_stmt->fetch()) {
 							echo $IdPlant = $rowresultselectPlantId_stmt['id_etsim_plant'];
 						}
-						if ( $addFixedCosts = $mysqli->prepare("UPDATE etsim_plant SET fixed_costs_etsim_plant = nb_unit_etsim_plant*om_mw_etsim_plant*power_unit_etsim_plant WHERE id_etsim_plant = ?;") ) {
-							$addFixedCosts->bind_param('s', $IdPlant);
+						if ( $addFixedCosts = $mysqli->prepare("UPDATE etsim_plant SET fixed_costs_etsim_plant = nb_unit_etsim_plant*om_mw_etsim_plant*power_unit_etsim_plant WHERE id_etsim_plant = :idPlant;") ) {
+							$addFixedCosts->bindParam(':idPlant', $IdPlant);
 							$addFixedCosts->execute();
 						} else {
 							$error_msg .= '<p class="error"> Error create fixed costs !</p>';
 						}
-						$selectPlantId_stmt->close();
+						//$selectPlantId_stmt->close();
 					} else {
 						$error_msg .= '<p class="error">ID PLANT not found !</p>';
 					}
 					if ( $selectTypePlantId_stmt = $mysqli->prepare($sqlselecttypeplantid) ) {
 						$selectTypePlantId_stmt->execute();
-						$resultselectTypePlantId_stmt = $selectTypePlantId_stmt->get_result();
-						while($rowresultselectTypePlantId_stmt = $resultselectTypePlantId_stmt->fetch_assoc()) {
+						//$resultselectTypePlantId_stmt = $selectTypePlantId_stmt->get_result();
+						while($rowresultselectTypePlantId_stmt = $selectTypePlantId_stmt->fetch()) {
 							echo $IdTypePlant = $rowresultselectTypePlantId_stmt['id_etsim_type_plant'];
 						}
-						$selectTypePlantId_stmt->close();
+						//$selectTypePlantId_stmt->close();
 					} else {
 						$error_msg .= '<p class="error">ID TYPE PLANT not found !</p>';
 					}
 					$insert_plantid_typeplant_id = "INSERT INTO is_type (id_etsim_plant, id_etsim_type_plant) VALUES ($IdPlant, $IdTypePlant);";
 					if ( $insert_plantid_typeplant_id_stmt = $mysqli->prepare($insert_plantid_typeplant_id) ) {
 						$insert_plantid_typeplant_id_stmt->execute();
-						$insert_plantid_typeplant_id_stmt->close();
+						//$insert_plantid_typeplant_id_stmt->close();
 					} else {
 						$error_msg .= '<p class="error">ERROR insert is_type id_etsim_plant & id_etsim_type_plant !</p>';
 					}

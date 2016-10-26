@@ -7,7 +7,9 @@
 include_once 'includes/db_connect.php';
 include_once 'includes/functions.php';
 
-sec_session_start();
+if(!isset($_SESSION))
+    sec_session_start();
+
 if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" || $_SESSION['role'] == "Player") {
 	if (isset($_POST['changepwdform']) && $_POST['changepwdform'] == 'changepwdform') {
 		if(!isset($_POST['pwd']) || !isset($_POST['cpwd']) ) {
@@ -29,8 +31,9 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" || $_SESSION[
 						WHERE id_etsim_members = ".$_SESSION['user_id'].";";
 				if ($stmt = $mysqli->prepare($select)) {
 					$stmt->execute();
-					$stmt->store_result();
-					$stmt->bind_result($username, $email);
+					//$stmt->store_result();
+					$stmt->bindColumn('username_etsim_members',$username);
+                    $stmt->bindColumn('email_etsim_members', $email);
 					if ($stmt->fetch() == 1) {
 						if (empty($error_msg)) {
 							// Crée un salt au hasard
@@ -74,8 +77,8 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" || $_SESSION[
 								mail($email,$subject,$message,$header);
 								$success .= '<p class="error">Send password : SUCCESS! </p>';
 								unset($_SESSION);
-								$update_stmt->close();
-								$mysqli->close();
+								//$update_stmt->close();
+								//$mysqli->close();
 							}
 						}
 					}

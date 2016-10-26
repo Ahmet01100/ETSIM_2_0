@@ -15,7 +15,7 @@
 ?>
 
 <?php if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager') : ?>
-<section class="wrapper style1 min-width="800px" width="30%" max-width="1000px">
+<section class="wrapper style1" min-width="800px" width="30%" max-width="1000px">
 					<div class="container">
 						<header class="major">
 							<div class="box post2">
@@ -75,7 +75,7 @@
 </section>
 <?php endif; ?>
 <?php if ($_SESSION['role'] == 'Player') : ?>
-				<section class="wrapper style1 min-width="800px" width="30%" max-width="1000px">
+				<section class="wrapper style1" min-width="800px" width="30%" max-width="1000px">
 					<div class="container">
 						<header class="major">
 							<div class="box post2">

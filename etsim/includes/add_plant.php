@@ -9,8 +9,8 @@
 	
 	$stmtSelectPlant = $mysqli->prepare("SELECT * FROM etsim_plant;");
 	$stmtSelectPlant->execute();
-	$resultstmtSelectPlant = $stmtSelectPlant->get_result();	
-	while($rowresultstmtSelectPlant = $resultstmtSelectPlant->fetch_assoc()) {
+	//$resultstmtSelectPlant = $stmtSelectPlant->get_result();	
+	while($rowresultstmtSelectPlant = $stmtSelectPlant->fetch()) {
 		$id = $rowresultstmtSelectPlant['id_etsim_plant'];
 		$nb = $rowresultstmtSelectPlant['nb_unit_etsim_plant'];
 		$pow = $rowresultstmtSelectPlant['power_unit_etsim_plant'];
@@ -30,11 +30,11 @@
 			if ($insertstmtSelectPlant = $mysqli->prepare($sql)) {
 				$insertstmtSelectPlant->execute();	
 			} else {
-				echo 'errroor';
+				echo 'error';
 			}
 			
 			$nnb = $nnb + 1;	
 		}
-		$insertstmtSelectPlant->close();
+		//$insertstmtSelectPlant->close();
 	}
 ?>

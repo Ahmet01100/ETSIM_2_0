@@ -6,7 +6,8 @@
 */
 include_once 'db_connect.php';
 include_once 'functions.php';
-sec_session_start();
+if(!isset($_SESSION))
+    sec_session_start();
  
 $error_msg = "";
 if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
@@ -56,10 +57,15 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 				
 				// Enregistre le nouvel utilisateur dans la base de données
 				$status = "Open";
-				if ($insertGame_stmt = $mysqli->prepare("INSERT INTO etsim_game (date_etsim_game, description_etsim_game, password_etsim_game, salt_etsim_game, status_etsim_game, maxplayer_etsim_game) VALUES (?, ?, ?, ?, ?, ?)")) {
-					$insertGame_stmt->bind_param('ssssss',$today, $namegame, $cryptpassword, $random_salt, $status, $maxplayer);
+				if ($insertGame_stmt = $mysqli->prepare("INSERT INTO etsim_game (date_etsim_game, description_etsim_game, password_etsim_game, salt_etsim_game, status_etsim_game, maxplayer_etsim_game) VALUES (:date, :desc, :pwd, :salt, :status, :maxPlayer)")) {
+					$insertGame_stmt->bindParam(':date',$today);
+                    $insertGame_stmt->bindParam(':desc', $namegame);
+                    $insertGame_stmt->bindParam(':pwd', $cryptpassword);
+                    $insertGame_stmt->bindParam(':salt', $random_salt);
+                    $insertGame_stmt->bindParam(':status', $status);
+                    $insertGame_stmt->bindParam(':maxPlayer', $maxplayer);
 					$insertGame_stmt->execute();
-					$insertGame_stmt->close();
+					//$insertGame_stmt->close();
 					$success_msg .= '<p class="error">Your game has been created !</p>';
 				} else {
 					$error_msg .= '<p class="error">Your game hasn t been created !</p>';

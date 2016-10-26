@@ -6,7 +6,8 @@
 */
 	include_once 'db_connect.php';
 	include_once 'functions.php';
-	sec_session_start();
+	if(!isset($_SESSION))
+        sec_session_start();
 
 if ($_SESSION['role'] == "Admin") {
 	if(isset($_GET['id']) && isset($_GET['col']) && isset($_GET['val'])){
@@ -19,7 +20,7 @@ if ($_SESSION['role'] == "Admin") {
 						FROM etsim_members
 						WHERE id_etsim_members = ".$_GET['id'].";";
 			if ($result = $mysqli->query($select)) {
-				while($obj = $result->fetch_array(MYSQLI_ASSOC)) {
+				while($obj = $result->fetch()) {
 					$username = $obj["username_etsim_members"];
 					$email = $obj["email_etsim_members"];
 				}
@@ -27,12 +28,12 @@ if ($_SESSION['role'] == "Admin") {
 				printf("Invalid query: %s\nWhole query: %s\n", $mysqli->error, $SQL);
 				exit();
 			}
-			if ($deleteloginattempts = $mysqli->prepare("DELETE FROM etsim_login_attempt WHERE user_id_login_attempt = ?")) {
+			if ($deleteloginattempts = $mysqli->prepare("DELETE FROM etsim_login_attempt WHERE user_id_login_attempt = :idUser")) {
 						//echo "Echec de la préparation : (" . $mysqli->errno . ") " . $mysqli->error;
 						//echo 'Vérouillé';
-						$deleteloginattempts->bind_param('s', $_GET['id']);  // Lie "$email" aux paramètres.
+						$deleteloginattempts->bindParam(':idUser', $_GET['id']);  // Lie "$email" aux paramètres.
 						$deleteloginattempts->execute();    // Exécute la déclaration.
-						$deleteloginattempts->close();
+						//$deleteloginattempts->close();
 			}
 			if ( $_GET['val'] == "1" ) {		
 				$message = "Your account $username has been activated on ETSIM Serious GAME.";
@@ -46,9 +47,9 @@ if ($_SESSION['role'] == "Admin") {
 				mail($email,$subject,$message,$header);
 			}
 		}
-		$stmt->close();
+		/*$stmt->close();
 		$result->close();
-		$mysqli->close();
+		$mysqli->close();*/
 		return true;
 	}
 	
@@ -58,7 +59,7 @@ if ($_SESSION['role'] == "Admin") {
 						FROM etsim_members
 						WHERE id_etsim_members = ".$_GET['id'].";";
 		if ($result = $mysqli->query($select)) {
-			while($obj = $result->fetch_array(MYSQLI_ASSOC)) {
+			while($obj = $result->fetch()) {
 				$username = $obj["username_etsim_members"];
 				$email = $obj["email_etsim_members"];
 			}
@@ -70,12 +71,12 @@ if ($_SESSION['role'] == "Admin") {
 		$query="DELETE FROM etsim_members WHERE id_etsim_members = ".$_GET['id'].";";
 		$stmt = $mysqli->prepare($query);
 		$stmt->execute();
-		$result->close();
-		$stmt->close();
-		$mysqli->close();
+		//$result->close();
+		//$stmt->close();
+		//$mysqli->close();
 		$resetUser = $mysqli->prepare("ALTER TABLE etsim_members AUTO_INCREMENT = 1;");
 		$resetUser->execute();
-		$resetUser->close();
+		//$resetUser->close();
 		return true;
 	}
 }

@@ -2,7 +2,8 @@
 include_once 'includes/db_connect.php';
 include_once 'includes/functions.php';
  
-sec_session_start();
+if(!isset($_SESSION))
+    sec_session_start();
  /*
 * Created by : bryan.maisano@gmail.com
 * date * 05-10-2015
@@ -29,7 +30,7 @@ sec_session_start();
 			<!-- Login Bar -->
 			<?php include_once 'includes/layout/LoginDiv.php'; ?>
 			<!-- Main -->
-				<section class="wrapper style1 min-width="800px" width="30%" max-width="1000px">
+				<section class="wrapper style1" min-width="800px" width="30%" max-width="1000px">
 					<div class="container">
 						<header class="major">
 							<div class="box post2">
@@ -47,7 +48,7 @@ sec_session_start();
 											<span class="byline" id="Frost">Bryan MAISANO</span> 
 										</div>
 										<p>bryan.maisano@gmail.com</p> 
-									<br></br>	
+									<br/>	
 									</article>
 								</article>
 							</div>

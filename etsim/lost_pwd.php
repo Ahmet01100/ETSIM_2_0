@@ -7,7 +7,8 @@ include_once 'includes/db_connect.php';
 include_once 'includes/functions.php';
 include_once 'includes/lostpwd.php';
 
-sec_session_start();
+if(!isset($_SESSION))
+    sec_session_start();
 echo $_SESSION['user_id'];
 if (!empty($_SESSION['user_id'])) {
 	$session = 1;
@@ -31,7 +32,7 @@ if (!empty($_SESSION['user_id'])) {
 			<?php include_once 'includes/layout/LoginDiv.php'; ?>
 			<!-- Main -->
 			<?php if ( $session == 0 ) : ?>	
-				<section class="wrapper style1 min-width="800px" width="30%" max-width="1000px">
+				<section class="wrapper style1" min-width="800px" width="30%" max-width="1000px">
 					<div class="container">
 						<header class="major">
 							<div class="box post2">
@@ -68,7 +69,7 @@ if (!empty($_SESSION['user_id'])) {
 					</div>
 				</section>
 			<?php else : ?>
-				<section class="wrapper style1 min-width="800px" width="30%" max-width="1000px">
+				<section class="wrapper style1" min-width="800px" width="30%" max-width="1000px">
 					<div class="container">
 						<header class="major">
 							<div class="box post2">

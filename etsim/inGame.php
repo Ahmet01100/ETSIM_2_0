@@ -176,16 +176,17 @@ if(!isset($_SESSION))
 									<div class="container">
 										<article>
 											<header id="<?php echo $idGame; ?>" class="head_idGame">
-											<h2 id="<?php echo $roundGame; ?>" class="round_number">INSERT TABLE ROUND N°<?php echo $roundGame; ?></h2>
-											<p id="<?php echo $demandPower ;?>" class="demand_power">DEMAND POWER = <font color="red"><?php echo $demandPower;?></font> MW </p>
-											<div class="box post2">
-												<div id="<?php echo $clock; ?>" class="clock" style="margin:2em;"></div>
-												<div class="message"></div>
-											</div>
+                                                <h2 id="<?php echo $roundGame; ?>" class="round_number">INSERT TABLE ROUND N°<?php echo $roundGame; ?></h2>
+                                                <p id="<?php echo $demandPower ;?>" class="demand_power">DEMAND POWER = <font color="red"><?php echo $demandPower;?></font> MW </p>
+                                                <div class="box post2">
+                                                    <div id="<?php echo $clock; ?>" class="clock" style="margin:2em;"></div>
+                                                    <div class="message"></div>
+                                                </div>
+                                            </header>
 										</article>
 									</div>
 
-									</header>
+									
 									<button href="javascript:void(0);" id='anc_add'>Add Row</button>
 									<button href="javascript:void(0);" id='anc_rem'>Remove Row</button>
 									<table id="tbl1" border="1" >

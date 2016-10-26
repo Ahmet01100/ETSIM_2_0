@@ -6,7 +6,8 @@
 */
 include_once 'db_connect.php';
 include_once 'functions.php';
-sec_session_start();
+if(!isset($_SESSION))
+    sec_session_start();
  
 if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 	if (isset($_POST['registertypeplant']) && $_POST['registertypeplant'] == 'registertypeplant') {
@@ -18,10 +19,13 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 			$max = $_POST['maxv_costs_etsim_type_plant'];
 
 			if (empty($error_msg)) {
-				if ($insert_stmt = $mysqli->prepare("INSERT INTO etsim_type_plant (name_etsim_type_plant, description_etsim_type_plant, minv_costs_etsim_type_plant, maxv_costs_etsim_type_plant) VALUES (?, ?, ?, ?)")) {
-					$insert_stmt->bind_param('ssss',$nameplant, $descriptionplant, $min, $max);		
+				if ($insert_stmt = $mysqli->prepare("INSERT INTO etsim_type_plant (name_etsim_type_plant, description_etsim_type_plant, minv_costs_etsim_type_plant, maxv_costs_etsim_type_plant) VALUES (:namePlant, :descPlant, :minvCost, :maxvCost)")) {
+					$insert_stmt->bindParam(':namePlant',$nameplant);		
+                    $insert_stmt->bindParam(':descPlant',$descriptionplant);
+                    $insert_stmt->bindParam(':minvCost',$min);
+                    $insert_stmt->bindParam(':maxvCost',$max);	
 					$insert_stmt->execute();
-					$insert_stmt->close();
+					//$insert_stmt->close();
 					$success_msg .= '<p class="error">Your type plant has been created !</p>';
 				} else {
 					$error_msg .= '<p class="error">Your type plant hasn t been created !</p>';

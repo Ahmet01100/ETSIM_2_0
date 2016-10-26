@@ -5,7 +5,8 @@
 * date * 07-11-2015
 */
 include_once 'functions.php';
-sec_session_start();
+if(!isset($_SESSION))
+    sec_session_start();
 
 if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" || $_SESSION['role'] == "Player" ) {
 	function newRowsInGame() {

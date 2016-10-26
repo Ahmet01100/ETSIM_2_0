@@ -341,7 +341,7 @@ if(!isset($_SESSION))
 					</div>
 				</div>		
 			<?php else : ?>
-				<section class="wrapper style1 min-width="800px" width="30%" max-width="1000px">
+				<section class="wrapper style1" min-width="800px" width="30%" max-width="1000px">
 					<div class="container">
 						<header class="major">
 							<div class="box post2">

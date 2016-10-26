@@ -7,7 +7,8 @@
 include_once 'db_connect.php';
 include_once 'functions.php';
 
-sec_session_start();
+if(!isset($_SESSION))
+    sec_session_start();
 
 if (!empty($_SESSION['user_id'])) {
 	$session = 1;
@@ -28,8 +29,10 @@ if ($session == 0) {
 					 WHERE email_etsim_members = '$email';";
 			if ($stmt = $mysqli->prepare($select)) {
 				$stmt->execute();
-				$stmt->store_result();
-				$stmt->bind_result($username, $db_password, $salt);
+				//$stmt->store_result();
+				$stmt->bindColumn('username_etsim_members',$username);
+                $stmt->bindColumn('password_etsim_members',$db_password);
+                $stmt->bindColumn('salt_etsim_members',$salt);
 				if ($stmt->fetch() == 1) {
 					if (empty($error_msg)) {
 						$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
@@ -57,8 +60,8 @@ if ($session == 0) {
 
 						// Exécute la déclaration.
 						$success .= '<p class="error">Send password : SUCCESS! </p>';
-						$mysqli->close();
-						$stmt->close();
+						//$mysqli->close();
+						//$stmt->close();
 					}
 				} else {
 					$error_msg .= '<p class="error">Users not found !</p>';

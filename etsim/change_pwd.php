@@ -6,7 +6,8 @@
 include_once 'includes/db_connect.php';
 include_once 'includes/functions.php';
 include_once 'includes/modifypwd.php';
-sec_session_start();
+if(!isset($_SESSION))
+    sec_session_start();
  
 ?>
 <!DOCTYPE HTML>
@@ -30,7 +31,7 @@ sec_session_start();
 			?>
 			<?php if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION['role'] == 'Player') : ?>			
 			<!-- Main -->
-				<section class="wrapper style1 min-width="800px" width="30%" max-width="1000px">
+				<section class="wrapper style1" min-width="800px" width="30%" max-width="1000px">
 					<div class="container">
 						<header class="major">
 							<div class="box post2">
@@ -67,7 +68,7 @@ sec_session_start();
 					</div>
 				</section>
 			<?php else : ?>
-				<section class="wrapper style1 min-width="800px" width="30%" max-width="1000px">
+				<section class="wrapper style1" min-width="800px" width="30%" max-width="1000px">
 					<div class="container">
 						<header class="major">
 							<div class="box post2">
