@@ -9,8 +9,6 @@ include_once 'includes/functions_game.php';
 
 if(!isset($_SESSION))
     sec_session_start();
- 
- 
 ?>
 <!DOCTYPE HTML>
 <html>

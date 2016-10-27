@@ -66,7 +66,7 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
                     $insertGame_stmt->bindParam(':maxPlayer', $maxplayer);
 					$insertGame_stmt->execute();
 					//$insertGame_stmt->close();
-					$success_msg .= '<p class="error">Your game has been created !</p>';
+					$success_msg = '<p class="error">Your game has been created !</p>';
 				} else {
 					$error_msg .= '<p class="error">Your game hasn t been created !</p>';
 				}
