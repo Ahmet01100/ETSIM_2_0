@@ -26,7 +26,7 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
                     $insert_stmt->bindParam(':maxvCost',$max);	
 					$insert_stmt->execute();
 					//$insert_stmt->close();
-					$success_msg .= '<p class="error">Your type plant has been created !</p>';
+					$success_msg = '<p class="error">Your type plant has been created !</p>';
 				} else {
 					$error_msg .= '<p class="error">Your type plant hasn t been created !</p>';
 				}
