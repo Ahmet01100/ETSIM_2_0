@@ -28,7 +28,7 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 				$sqlinsert = "INSERT INTO etsim_plant (nb_unit_etsim_plant, power_unit_etsim_plant, cost_mw_etsim_plant, om_mw_etsim_plant, rdt_etsim_plant, construction_etsim_plant, operation_etsim_plant, fixed_costs_etsim_plant, description_etsim_plant) VALUES ($numberunit, $poweruunit, $costmw, $ommw, $rdt, $construction, $operation, $fixedCosts, $descPlant);";
 				if ( $insert_stmt = $mysqli->prepare($sqlinsert) ) {
 					$insert_stmt->execute();
-					$success_msg .= '<p class="error">Your type plant has been created !</p>';
+					$success_msg = '<p class="error">Your type plant has been created !</p>';
 					$sqlselectplantid = "SELECT id_etsim_plant FROM etsim_plant ORDER BY id_etsim_plant DESC LIMIT 0, 1;";
 					$sqlselecttypeplantid = "SELECT id_etsim_type_plant FROM etsim_type_plant WHERE name_etsim_type_plant = '$nameplant';";
 					if ( $selectPlantId_stmt = $mysqli->prepare($sqlselectplantid) ) {
@@ -64,13 +64,13 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 					} else {
 						$error_msg .= '<p class="error">ERROR insert is_type id_etsim_plant & id_etsim_type_plant !</p>';
 					}
-					$insert_stmt->close();	
+					//$insert_stmt->close();	
 				} else {
 					$error_msg .= '<p class="error">Your plant hasn t been created !</p>';
 				}
 			}
 			if (empty($error_msg)) {
-				echo '<SCRIPT>javascript:window.close()</SCRIPT>';
+				//echo '<SCRIPT>javascript:window.close()</SCRIPT>';
 			}
 		}
 	}
