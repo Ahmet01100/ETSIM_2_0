@@ -6,7 +6,8 @@
 	include_once 'includes/db_connect.php';
 	include_once 'includes/functions.php';
 	include_once 'includes/registertypeplant.inc.php';
-	sec_session_start();
+	if(!isset($_SESSION))
+        sec_session_start();
 	
 	if (!empty($error_msg)) {
 		echo $error_msg;
@@ -22,6 +23,7 @@
 								<article>
 									<header>
 										<h2>ADD NEW TYPE PLANT</h2>
+                                        
 									</header>
 										<fieldset><legend>Details</legend>
 											<form method="post" action="<?php echo esc_url($_SERVER['PHP_SELF']); ?>">
