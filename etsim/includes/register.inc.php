@@ -101,9 +101,9 @@ if (isset($_POST['registration_form']) && $_POST['registration_form'] == 'regist
 									Yours sincerely
 									";
                         $header = "From: bryan.maisano@utbm.fr";
-						$subject = "Resgister to ETSIM Serious Game";
+						$subject = "Register to ETSIM Serious Game";
 						mail($email,$subject,$message,$header);
-						$mail_admin = "soufian.besbiss@utbm.fr";
+						$mail_admin = "serious.game90@gmail.com";
 						$message_admin = "New user has been created on ETSIM Serious GAME. You should activate this user : $username ";
 						$subject_admin = "New register user : $username";
 						$header_admin = "From: etsim.serious-game@utbm.fr";
@@ -116,7 +116,7 @@ if (isset($_POST['registration_form']) && $_POST['registration_form'] == 'regist
 						}
 						//$mysqli->close();
 						//$insert_stmt->close();
-						$success_msg .= '<p class="error">Your account has been created !</p>';
+						$success_msg = '<p class="error">Your account has been created !</p>';
 					}
 				} else {
 					// echo "Echec de la préparation : (" . $mysqli->errno . ") " . $mysqli->error;
