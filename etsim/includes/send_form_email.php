@@ -22,8 +22,8 @@ if (isset($_POST['contactform']) && $_POST['contactform'] == 'contactform') {
 		$email = $_POST['email']; // required
 		$message = $_POST['message']; // required
 
-		$email_to = "bryan.maisano@gmail.com";
-		$email_subject = "ETSIM Serious Game - Contact form by $name";
+		$email_to = "serious.game90@gmail.com";
+		$email_subject = "ETSIM Serious Game - Contact form by $name with mail $email";
 		$headers = "From: $email";
 		$error_message = "";
 		$email_exp = '/^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/';
