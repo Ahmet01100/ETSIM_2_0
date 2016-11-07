@@ -221,7 +221,7 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
             $stmtSelectRound->bindParam(':userId', $_SESSION['user_id']);
             $stmtSelectRound->bindParam(':nbRound', $numberRoundGame);
 			$stmtSelectRound->execute();
-			//$resultstmtSelectRound = $stmtSelectRound->get_result();
+			
 			$i = 1;
 			while($rowresultstmtSelectRound = $stmtSelectRound->fetch()) {
 				echo '<tr><td><input disabled type="number" name="offerInGame" class="line_etsim_round_game_temp" id="'.$rowresultstmtSelectRound['line_etsim_round_game_temp'].'" value="'.$rowresultstmtSelectRound['line_etsim_round_game_temp'].'"/><br></td>';
@@ -253,14 +253,17 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
 							$stmtSelectShowPlant->bindParam(':idEtsimPlant', $rowresultstmttableSelectPlantMemberResults['id_etsim_plant_game_contains']);
                             $stmtSelectShowPlant->bindParam(':idMember', $_SESSION['user_id']);
 							$stmtSelectShowPlant->execute();
-							//$resultstmtSelectShowPlant = $stmtSelectShowPlant->get_result();
+                           
 							while($rowresultstmtSelectShowPlant = $stmtSelectShowPlant->fetch()) {
+                                echo 'Je suis dans la boucle while';
 								$plant = $rowresultstmtSelectShowPlant['name_etsim_type_plant'].' - '.$rowresultstmtSelectShowPlant['nb_unit_etsim_plant'].' UNITS - '.$rowresultstmtSelectShowPlant['power_unit_etsim_plant'].'MW';
 								$IdPlantO = $rowresultstmttableSelectPlantMemberResults['id_etsim_plant_game_contains'];
 								$name[] = $plant;
 								$tab1[] = $rowresultstmttableSelectPlantMemberResults['id_etsim_plant_game_contains'];
+                                echo 'tab1:'. $tab1[0];
 								// echo '<option id="'.$rowresultstmttableSelectPlantMemberResults['id_etsim_plant_game_contains'].'" class="idplant_etsim_round_game_temp">"'.$plant.'"</option>';
-							}
+							//}
+                            
 							$SelectIdPlantLine = "	SELECT idplant_etsim_round_game_temp 
 														FROM etsim_round_game_temp 
 														WHERE idetsimgame_etsim_round_game_temp = :idGame
@@ -298,6 +301,7 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
 										// echo '<option id="'.$rowresultstmttableSelectPlantMemberResults['id_etsim_plant_game_contains'].'" class="idplant_etsim_round_game_temp">"'.$plant.'"</option>';
 									// }
 									// $stmtSelectIdPlantLine->close();
+                        }
 						} else {
 							$error_msg .= "Error create table current plant of user !";
 						}
@@ -310,7 +314,7 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
 				$i++;
 				echo '</select></td></tr>';
 			}
-			$resultstmtSelectRound->close();
+			//$resultstmtSelectRound->close();
 		} else {
 			$error_msg .= 'Error insert new rows !';
 		}	

@@ -281,11 +281,11 @@ function createTable($mysqli, $sql_query) {
 		echo '<tr id="'.$row['id_etsim_members'].'"><td>';
 		echo '<input disabled type="text" class="id_etsim_members" value="'.$row['id_etsim_members'].'">';
 		echo '</td><td>';
-		echo '<input type="text" class="username_etsim_members" value="'.$row['username_etsim_members'].'">';
+		echo '<input disabled type="text" class="username_etsim_members" value="'.$row['username_etsim_members'].'">';
 		echo '</td><td>';
-		echo '<input id="email" type="text" class="email_etsim_members" value="'.$row['email_etsim_members'].'">';
+		echo '<input disabled id="email" type="text" class="email_etsim_members" value="'.$row['email_etsim_members'].'">';
 		echo '</td><td>';
-		echo '<input id="institution" type="text" class="group_etsim_members" value="'.$row['group_etsim_members'].'">';
+		echo '<input disabled id="institution" type="text" class="group_etsim_members" value="'.$row['group_etsim_members'].'">';
 		echo '</td><td>';
 		echo '<select id="selectrole" class="role_etsim_members">';
 		$tableSelect = "SELECT role_etsim_members FROM etsim_members GROUP BY role_etsim_members ORDER BY role_etsim_members ASC";
