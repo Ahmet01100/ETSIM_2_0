@@ -4,6 +4,8 @@
 * All primary function
 * date * 7-11-2015
 */
+include_once 'psl-config.php';
+
 if (isset($_POST['contactform']) && $_POST['contactform'] == 'contactform') {
 	if(isset($_POST['contactform'])) {
 		function died($error) {
@@ -22,7 +24,6 @@ if (isset($_POST['contactform']) && $_POST['contactform'] == 'contactform') {
 		$email = $_POST['email']; // required
 		$message = $_POST['message']; // required
 
-		$email_to = "serious.game90@gmail.com";
 		$email_subject = "ETSIM Serious Game - Contact form by $name with mail $email";
 		$headers = "From: $email";
 		$error_message = "";
@@ -40,7 +41,7 @@ if (isset($_POST['contactform']) && $_POST['contactform'] == 'contactform') {
 			died($error_message);
 		}	
 		
-		mail($email_to,$email_subject,$message,$headers);  
+		mail(GMAIL_ADMIN,$email_subject,$message,$headers);  
 	}
 }
 ?>
