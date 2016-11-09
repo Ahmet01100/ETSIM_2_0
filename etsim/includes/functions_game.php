@@ -196,7 +196,7 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 				//$resultstmttableSelectGameNotRegister = $stmttableSelectGameNotRegister->get_result();
 				
 				while($rowresultstmttableSelectGameNotRegister = $stmttableSelectGameNotRegister->fetch()) {
-					$tableSelectGameOpen = "SELECT * FROM etsim_game WHERE id_etsim_game = :idEtsimGame AND status_etsim_game = 'Open'";
+					$tableSelectGameOpen = "SELECT * FROM etsim_game WHERE id_etsim_game = :idEtsimGame AND (status_etsim_game = 'Open' OR status_etsim_game = 'Play')";
 					if( $stmttableSelectGameOpen = $mysqli->prepare($tableSelectGameOpen) ) {
 						$stmttableSelectGameOpen->bindParam(':idEtsimGame', $rowresultstmttableSelectGameNotRegister['id_etsim_game']);
 						$stmttableSelectGameOpen->execute();
