@@ -10,11 +10,19 @@ include_once 'functions.php';
 if(!isset($_SESSION))
     sec_session_start();
 
-if (!empty($_SESSION['user_id'])) {
-	$session = 1;
-} else {
-	$session = 0;
+if(isset($_SESSION["user_id"]))
+{
+    if (!empty($_SESSION['user_id'])) {
+        $session = 1;
+    } else {
+        $session = 0;
+    }
 }
+else
+{
+    $session = 0;
+}
+    
 
 if ($session == 0) {
 	if (isset($_POST['lostpwdform']) && $_POST['lostpwdform'] == 'lostpwdform') {
