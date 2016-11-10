@@ -47,10 +47,17 @@ if(!isset($_SESSION))
 									<form method="post" action="<?php echo esc_url($_SERVER['PHP_SELF']); ?>">
 										<input type="hidden" name="changepwdform" value="changepwdform"/>
 										<div class="row 50%">
-											<div class="6u 12u(mobilep)">
+											<div class="12u 12u(mobilep)">
+												<input type="password" name="lpwd" id="lpwd" placeholder="Last password" />
+											</div>
+                                        </div>
+                                        <div class="row 50%">
+											<div class="12u 12u(mobilep)">
 												<input type="password" name="pwd" id="pwd" placeholder="Password" />
 											</div>
-											<div class="6u 12u(mobilep)">
+                                        </div>
+                                        <div class="row 50%">
+											<div class="12u 12u(mobilep)">
 												<input type="password" name="cpwd" id="cpwd" placeholder="Confirm password" />
 											</div>
 										</div>

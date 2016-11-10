@@ -12,11 +12,15 @@ if(!isset($_SESSION))
 
 if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" || $_SESSION['role'] == "Player") {
 	if (isset($_POST['changepwdform']) && $_POST['changepwdform'] == 'changepwdform') {
-		if(!isset($_POST['pwd']) || !isset($_POST['cpwd']) ) {
+		if(/*!isset($_POST['lpwd']) || */!isset($_POST['pwd']) || !isset($_POST['cpwd']) ) {
 			echo 'We are sorry, but there appears to be a problem with the form you submitted.';       
 		} else {
+           // $lpwd = $_POST['lpwd'];
 			$pwd = $_POST['pwd'];
 			$cpwd = $_POST['cpwd'];
+            
+            // $selectLastPwd = "SELECT password_etsim_members FROM etsim_members WHERE id_etsim_members = ".$_SESSION['user_id'].";";
+            
 			if ((strlen($pwd) > 128) && (strlen($cpwd) > 128)) {
 				// Le mot de passe hashé ne doit pas dépasser les 128 caractères
 				// Si ce n’est aps le cas, quelque chose de vraiment bizarre s’est produit
@@ -24,7 +28,9 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" || $_SESSION[
 			}
 			if ( $pwd != $cpwd ) {
 					$error_msg .= '<p class="error">Your password and confirmation must match exactly</p>';
-			} else {
+			//}   elseif ( $lwpd != $selectLastPwd ){ 
+            //        $error_msg .= '<p class="error">Your last password must match exactly</p>';
+            }   else {
 				$select="SELECT username_etsim_members
 							   ,email_etsim_members
 						FROM etsim_members

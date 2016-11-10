@@ -8,7 +8,6 @@ include_once 'includes/functions.php';
 include_once 'includes/send_form_email.php';
 if(!isset($_SESSION))
     sec_session_start();
- 
 ?>
 <!DOCTYPE HTML>
 <html>

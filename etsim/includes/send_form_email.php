@@ -5,6 +5,7 @@
 * date * 7-11-2015
 */
 include_once 'psl-config.php';
+require_once 'swiftmailer/lib/swift_required.php';
 
 if (isset($_POST['contactform']) && $_POST['contactform'] == 'contactform') {
 	if(isset($_POST['contactform'])) {
@@ -39,9 +40,21 @@ if (isset($_POST['contactform']) && $_POST['contactform'] == 'contactform') {
 		 
 		if(strlen($error_message) < 0) {
 			died($error_message);
-		}	
-		
-		mail(GMAIL_ADMIN,$email_subject,$message,$headers);  
+		}
+        
+        // Envoi du mail avec Swiftmailer       
+        $transport = Swift_SmtpTransport::newInstance(GMAIL_SMTP, 465, GMAIL_ENCRYPTION)
+            ->setUsername(GMAIL_ADMIN)
+            ->setPassword(GMAIL_PWD);
+
+        $mailer = Swift_Mailer::newInstance($transport);
+
+        $messageSwift = Swift_Message::newInstance($email_subject)
+          ->setFrom(array($email => $name))
+          ->setTo(array(GMAIL_ADMIN))
+          ->setBody($message."\n\nMail sender : ".$email);
+
+        $result = $mailer->send($messageSwift);
 	}
 }
 ?>
