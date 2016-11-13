@@ -5,7 +5,7 @@
 * date * 10-10-2015
 */
 include_once 'db_connect.php';
- 
+require_once 'swiftmailer/lib/swift_required.php'; 
 $error_msg = "";
 
 
@@ -94,7 +94,9 @@ if (isset($_POST['registration_form']) && $_POST['registration_form'] == 'regist
                         $insert_stmt->bindParam(':role', $player);
                         $insert_stmt->bindParam(':enable', $enable);
 						$insert_stmt->bindParam(':group', $institution);
-						$message = "	Dear Mr. $username
+						
+                        // Envoi du mail vers l'utilisateur qui vient de créer son compte
+                        $message = "	Dear Mr. $username
 									Your Account has been created on http://etsim.pro-project.fr/. 
 									You should wait the activation of your account by a administrator for use it. An other email will be send after enable.
 									
@@ -102,11 +104,33 @@ if (isset($_POST['registration_form']) && $_POST['registration_form'] == 'regist
 									";
                         $header = "From: bryan.maisano@utbm.fr";
 						$subject = "Register to ETSIM Serious Game";
-						mail($email,$subject,$message,$header);
+     
+                        $transport = Swift_SmtpTransport::newInstance(GMAIL_SMTP, 465, GMAIL_ENCRYPTION)
+                            ->setUsername(GMAIL_ADMIN)
+                            ->setPassword(GMAIL_PWD);
+
+                        $mailer = Swift_Mailer::newInstance($transport);
+
+                        $messageSwift = Swift_Message::newInstance($subject)
+                          ->setFrom(array($email => $header))
+                          ->setTo(array($email))
+                          ->setBody($message);
+
+                        $result = $mailer->send($messageSwift);
+                        
+                        // Envoi du mail vers l'administrateur qui doit activer le compte
 						$message_admin = "New user has been created on ETSIM Serious GAME. You should activate this user : $username ";
 						$subject_admin = "New registered user : $username";
 						$header_admin = "From: etsim.serious-game@utbm.fr";
-						mail(GMAIL_ADMIN,$subject_admin,$message_admin,$header_admin);
+
+                        $mailer1 = Swift_Mailer::newInstance($transport);
+
+                        $messageSwift1 = Swift_Message::newInstance($subject_admin)
+                          ->setFrom(array($email => $header_admin))
+                          ->setTo(array(GMAIL_ADMIN))
+                          ->setBody($message_admin);
+
+                        $result = $mailer1->send($messageSwift1);
 						
 						
 						// Exécute la déclaration.

@@ -42,7 +42,7 @@ if (isset($_POST['contactform']) && $_POST['contactform'] == 'contactform') {
 			died($error_message);
 		}
         
-        // Envoi du mail avec Swiftmailer       
+        // Envoi du mail de contact avec Swiftmailer       
         $transport = Swift_SmtpTransport::newInstance(GMAIL_SMTP, 465, GMAIL_ENCRYPTION)
             ->setUsername(GMAIL_ADMIN)
             ->setPassword(GMAIL_PWD);
