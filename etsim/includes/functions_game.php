@@ -13,6 +13,7 @@ if(!isset($_SESSION))
  
 $error_msg = "";
 if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
+    
 	function createTableGame($mysqli) {
 		$tableSelectGame = "SELECT * FROM etsim_game";
 		$stmttableSelectGame = $mysqli->prepare($tableSelectGame);

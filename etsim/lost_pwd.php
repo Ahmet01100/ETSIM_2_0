@@ -9,7 +9,7 @@ include_once 'includes/lostpwd.php';
 
 if(!isset($_SESSION))
     sec_session_start();
-echo $_SESSION['user_id'];
+//echo $_SESSION['user_id'];
 if (!empty($_SESSION['user_id'])) {
 	$session = 1;
 } else {

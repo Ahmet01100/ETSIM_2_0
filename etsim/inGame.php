@@ -34,17 +34,20 @@ if(!isset($_SESSION))
 										<h2>RESULTS TABLE</h2>
 									</header>
 										<?php
+                                           
 											if (isset($_POST['goInGame']) && $_POST['goInGame'] == 'goInGame') {
-												// echo $_POST['id_etsim_game'];
+                                                
+                                                //echo 'Je suis dans Go in game';
+                                                
 												$Uid = $_SESSION['user_id'];
-
 												if ( (isset($_POST['id_etsim_game']) && !empty($_POST['id_etsim_game'])) && (isset($_POST['date_etsim_game']) && !empty($_POST['date_etsim_game'])) && (isset($_POST['description_etsim_game']) && !empty($_POST['description_etsim_game'])) ) {
 													// Nettoyez et validez les données transmises au script
-													$idGame = $_POST['id_etsim_game'];
+													//$idGame = $_POST['id_etsim_game'];
+                                                    $_SESSION['id_etsim_game']=$_POST['id_etsim_game'];
+                                                    $idGame = $_SESSION['id_etsim_game'];
 													$date_etsim_game = $_POST['date_etsim_game'];
 													$description_etsim_game = $_POST['description_etsim_game'];
 												}
-
 												if ($stmtSelectCurrentRoundNumber = $mysqli->prepare("	SELECT erg.number_etsim_round_game 
 																										FROM etsim_round_game erg 
 																										WHERE erg.id_etsim_round_game like '$idGame-$Uid-%'
@@ -52,18 +55,21 @@ if(!isset($_SESSION))
 																										ORDER BY erg.number_etsim_round_game 
 																										DESC LIMIT 1;")) {
 
-												//	$stmtSelectCurrentRoundNumber->bind_param('s', $stringlike);
 													$stmtSelectCurrentRoundNumber->execute();    // Exécute la déclaration.
 													//$stmtSelectCurrentRoundNumber->store_result();
 											 
 													// Récupère les variables dans le résultat
 													$stmtSelectCurrentRoundNumber->bindColumn('number_etsim_round_game',$roundGame);
 													$stmtSelectCurrentRoundNumber->fetch();
-													//$stmtSelectCurrentRoundNumber->close();
 													$roundGame = ($roundGame + 1);
+                                                    
+                                                    $_SESSION['roundGame']=$roundGame;
 												}
 											}
-											if (isset($_POST['register_round']) && $_POST['register_round'] == 'register_round') {
+											else if (isset($_POST['register_round']) && $_POST['register_round'] == 'register_round') {
+                                                
+                                                echo 'Je suis dans Register ROund';
+                                                
 												if ( (isset($_POST['idetsimgame_etsim_round_game']) && !empty($_POST['idetsimgame_etsim_round_game'])) ) {
 													$idGame = $_POST['idetsimgame_etsim_round_game'];
 												}
@@ -86,8 +92,16 @@ if(!isset($_SESSION))
 													$stmtSelectCurrentRoundNumber->fetch();
 													//$stmtSelectCurrentRoundNumber->close();
 													$roundGame = ($roundGame + 1);
+                                                    $_SESSION['roundGame']=$roundGame;
 												}
 											}
+                                            else
+                                            {
+                                                $idGame = $_SESSION['id_etsim_game'];
+                                                $roundGame=$_SESSION['roundGame'];
+                                                $Uid = $_SESSION['user_id'];
+                                            }
+                                        
 										?>
 									<canvas id="myChart" width="400" height="200"></canvas>
 									<table>
@@ -173,7 +187,7 @@ if(!isset($_SESSION))
 										<button onclick="window.location.reload()">next round</button>
 									<?php	die();?>
 									<?php endif ?>
-									<div class="container">
+									<div id="divInsertTable" class="container">
 										<article>
 											<header id="<?php echo $idGame; ?>" class="head_idGame">
                                                 <h2 id="<?php echo $roundGame; ?>" class="round_number">INSERT TABLE ROUND N°<?php echo $roundGame; ?></h2>
@@ -185,9 +199,47 @@ if(!isset($_SESSION))
                                             </header>
 										</article>
 									</div>
-
-									
-									<button href="javascript:void(0);" id='anc_add'>Add Row</button>
+                                    <?php 
+											InsertRowsRoundGame($mysqli, $idGame, $roundGame, $demandPower);          
+                                    ?>
+                                    <form method="post" action="includes/insert_row_round.php" >
+                                        
+                                        <table>
+                                            <tr>
+                                                <td>
+                                                    Volume
+                                                </td>
+                                                <td>
+                                                    Price
+                                                </td>
+                                                <td>
+                                                    Power plant
+                                                </td>
+                                                <td>
+                                                    
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                     <input type="number" id="monVolume" name="volumeInGame" placeholder="200"  required="required"  value="1">
+                                                </td>
+                                                <td>
+                                                    <input type="number" id="monPrice" name="priceInGame" placeholder="200"  required="required" autofocus="autofocus" value="1">
+                                                </td>
+                                                <td>
+                                                    <?php getPowerPlantList($mysqli, $idGame, $roundGame); ?>
+                                                </td>
+                                                <td>
+                                                    <input type="submit" value="Add Row"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        
+                                        <input type="hidden" name="demand" value="<?php echo $demandPower; ?>"/>
+                                        <input type="hidden" name="numRound" value="<?php echo $roundGame; ?>"/>
+                                    </form>
+                                    
+                                    <button href="javascript:void(0);" id='anc_add'>Add Row</button>
 									<button href="javascript:void(0);" id='anc_rem'>Remove Row</button>
 									<table id="tbl1" border="1" >
 										<tr>
@@ -204,9 +256,9 @@ if(!isset($_SESSION))
 												POWER PLANT
 											</th>
 										</tr>
-										<?php 
-											InsertRowsRoundGame($mysqli, $idGame, $roundGame, $demandPower);
-										?>
+                                        
+                                        
+										
 										<input type="hidden" name="register_line_round" class="line_etsim_round_game" value="<?php echo SelectLineRoundGameUser($mysqli, $idGame, $roundGame); ?>"/>
 										<input type="hidden" name="delete_line_round" class="delete_line_etsim_round_game" value="<?php echo DeleteLineRoundGameUser($mysqli, $idGame, $roundGame); ?>"/>
 										<input type="hidden" name="register_round" value="register_round"/>
@@ -216,6 +268,7 @@ if(!isset($_SESSION))
 										<input type="hidden" name="number_etsim_round_game_temp" value="<?php GameRoundNumber($mysqli, $idGame); ?>">
 										<?php
 											$test = DeleteLineRoundGameUser($mysqli, $idGame, $roundGame);
+                                            //Show the rows added by the user in the round
 											SelectRowsTempRound($mysqli, $idGame, $roundGame, $test);
 										?>
 									</table>
