@@ -59,7 +59,7 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" || $_SESSION[
 						while (in_array($randomIndex, $stack, true)) {
 							$randomIndex = rand(1,$totalCount);
 						}
-						if ($stmtInsertUserGame = $mysqli->prepare("INSERT INTO can_contains (id_etsim_plant_game_contains, id_etsim_game, id_etsim_members, id_etsim_round_game) VALUES (:randIndex, :idGame, idMember, :idRound);")) {
+						if ($stmtInsertUserGame = $mysqli->prepare("INSERT INTO can_contains (id_etsim_plant_game_contains, id_etsim_game, id_etsim_members, id_etsim_round_game) VALUES (:randIndex, :idGame, :idMember, :idRound);")) {
 							$stmtInsertUserGame->bindParam(':randIndex', $randomIndex); 
                             $stmtInsertUserGame->bindParam(':idGame', $idgame); 
                             $stmtInsertUserGame->bindParam(':idMember', $memberID); 
@@ -87,10 +87,10 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" || $_SESSION[
 									$varCost = ($randc/$rdt);
 								}
 								if ($stmtInsertVcost = $mysqli->prepare("INSERT INTO have (id_etsim_members_have, v_costs_etsim_members_have, id_etsim_plant, id_etsim_game) VALUES (:idMember, :vCost, :idPlant, :idGame);")) {
-									$stmtInsertVcost->bind_param(':idMember', $memberID);
-                                    $stmtInsertVcost->bind_param(':vCost', $varCost);
-                                    $stmtInsertVcost->bind_param(':idPlant', $randomIndex);
-                                    $stmtInsertVcost->bind_param(':idGame', $idgame);
+									$stmtInsertVcost->bindParam(':idMember', $memberID);
+                                    $stmtInsertVcost->bindParam(':vCost', $varCost);
+                                    $stmtInsertVcost->bindParam(':idPlant', $randomIndex);
+                                    $stmtInsertVcost->bindParam(':idGame', $idgame);
 									$stmtInsertVcost->execute();
 									//s$stmtInsertVcost->close();
 								} else {

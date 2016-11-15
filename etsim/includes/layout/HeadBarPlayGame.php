@@ -27,7 +27,7 @@
 		$(document).ready(function(){					
 			$('.join_etsim_game').click(function(){
 				idg = $(this).attr('id');
-				password = $('#'+idg+'.password_etsim_game').val();			
+				password = $('#'+idg+'.password_etsim_game').val();
 				$.post('includes/registeringame.inc.php?jgame_id='+idg+'&jpassword='+password,function(data){
 					window.location.reload();
 				});
