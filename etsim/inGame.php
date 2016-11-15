@@ -200,7 +200,7 @@ if(!isset($_SESSION))
 										</article>
 									</div>
                                     <?php 
-											InsertRowsRoundGame($mysqli, $idGame, $roundGame, $demandPower);          
+											//InsertRowsRoundGame($mysqli, $idGame, $roundGame, $demandPower);          
                                     ?>
                                     <form method="post" action="includes/insert_row_round.php" >
                                         

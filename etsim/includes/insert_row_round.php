@@ -10,7 +10,7 @@ if(!isset($_SESSION))
     
         if(isset($_POST['volumeInGame']) && isset($_POST['priceInGame']) && isset($_POST['plantList']) && isset($_POST['numRound']) && isset($_POST['demand']))
         {
-            $reqMaxLine = "SELECT MAX(line_etsim_round_game_temp)+1 FROM etsim_round_game_temp 
+            $reqMaxLine = "SELECT IFNULL(MAX(line_etsim_round_game_temp),0)+1 FROM etsim_round_game_temp 
                             WHERE idetsimgame_etsim_round_game_temp = :idEtsimGame AND number_etsim_round_game_temp = :numRound"; 
             $maxLine=1;
             if( $stmtMaxLine = $mysqli->prepare($reqMaxLine) ) {
