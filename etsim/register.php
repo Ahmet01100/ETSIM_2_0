@@ -74,18 +74,42 @@ sec_session_start();
 																if (isset($_POST['email'])) 
 																	echo htmlentities(trim($_POST['email'])); 
 																?>"/><br>
-												Institution: <input 	type="text" 
+												Institution: 
+                                                
+                                                <select id="institution" class="form-control" name="institution">
+                                                <?php
+                                                $liste=listInstitution($mysqli);
+                                                foreach ($liste as $institution) 
+                                                {
+                                                    echo '<option ';
+                                                    if(isset($_POST['institution']) && $_POST['institution']==$institution[1])
+                                                    {
+                                                        echo 'selected="selected" ';
+                                                    }                                                    
+                                                    echo ' id="'.$institution[0].'" value="'.$institution[1].'" class="institutionClass">"'.$institution[1].'"</option>';
+                                                }
+                                                
+                                                ?>
+                                                </select><br/>
+                                                
+                                                <!--
+                                                <input 	type="text" 
 																name="institution" 
 																id="institution" 
 																placeholder="UTBM"
 																x-moz-errormessage="Institution is required!"
 																required="required"
 																autofocus="autofocus"
-																value="<?php 
+																value="<?php /*
 																if (isset($_POST['institution'])) 
-																	echo htmlentities(trim($_POST['institution'])); 
-																?>"/><br>
-												Password: <input 	type="password"
+																	echo htmlentities(trim($_POST['institution'])); */
+																?>"/> -->
+                                                
+                                                
+                                                <br>  
+												Password: 
+                                            
+                                                <input 	type="password"
 																	name="password" 
 																	id="password"
 																	x-moz-errormessage="Password is required!"
@@ -105,6 +129,7 @@ sec_session_start();
 																			if (isset($_POST['confirmpwd'])) 
 																				echo htmlentities(trim($_POST['confirmpwd'])); 
 																			?>"/><br>
+                                               
 												<input type="submit" name="register" id="register" value="Register" /> 
 											</form>
 											<p>Return to the <a href="index.php">login page</a>.</p>

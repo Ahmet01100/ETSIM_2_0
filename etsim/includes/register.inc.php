@@ -149,4 +149,20 @@ if (isset($_POST['registration_form']) && $_POST['registration_form'] == 'regist
 	}
 }
 
+// Rempli avec la liste d'institution
+function listInstitution($mysqli){
+    $req="SELECT institution_id,institution_name FROM institution;";
+    $reponse= $mysqli->prepare($req);
+    $liste =array();
+    if($reponse->execute())
+    {
+         while ($donnees = $reponse->fetch())
+        {
+            array_push($liste, array($donnees['institution_id'],$donnees['institution_name']));
+        }
+    }
+    return $liste;
+}
+
+
 ?>
