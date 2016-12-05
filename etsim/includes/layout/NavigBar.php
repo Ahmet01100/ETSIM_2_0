@@ -11,7 +11,7 @@
 	<nav id="nav">
 		<ul>
 			<li <?php if ($_SERVER["PHP_SELF"] == '/index.php') { echo "class=\"current\""; } ?> ><a href="index.php">HOME</a></li>
-			<?php if(isset($_SESSION['role'])) :?>
+			<?php if(isset($_SESSION['user_id']) && isset($_SESSION['role'])) :?>
                 <?php if ($_SESSION['role'] == 'Player' || $_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager') : ?>
                     <li <?php if (($_SERVER["PHP_SELF"] == '/play_game.php') || ($_SERVER["PHP_SELF"] == '/play_rules.php') || ($_SERVER["PHP_SELF"] == '/play_manage.php')) { echo " class=\"current\"";} ?> >
                         <a href="play_game.php">PLAY</a>

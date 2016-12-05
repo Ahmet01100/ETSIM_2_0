@@ -21,7 +21,12 @@ if(!isset($_SESSION))
 	<body>
 		<div id="page-wrapper">
 			<!-- Navigation Bar -->
-			<?php include_once 'includes/layout/NavigBar.php'; ?>
+			<?php include_once 'includes/layout/NavigBar.php'; 
+            
+            /*echo 'user_id:'.$_SESSION['user_id'].'<br/>';
+            echo 'role:'.$_SESSION['role'];*/
+            ?>
+            
 			<!-- Login Bar -->
 			<?php include_once 'includes/layout/LoginDiv.php'; ?>
 			<!-- MAIN -->

@@ -130,6 +130,7 @@ function login($login, $password, $mysqli) {
                     // Protection XSS car nous pourrions conserver cette valeur
                     $username = preg_replace("/[^a-zA-Z0-9_\-]+/", "", $username);
                     $_SESSION['username'] = $username;
+                    $_SESSION['email'] = $email;
                     $_SESSION['login_string'] = hash('sha512', $db_password . $user_browser);
 					$_SESSION['role'] = $role;
 					$_SESSION['institution'] = $group;
@@ -191,7 +192,7 @@ function login_check($mysqli) {
  
         // Récupère la chaîne user-agent de l’utilisateur
         $user_browser = $_SERVER['HTTP_USER_AGENT'];
-        
+        //echo 'user_browser:'.$user_browser;
         
         
         if ($stmt = $mysqli->prepare("SELECT password_etsim_members FROM etsim_members WHERE id_etsim_members = :iduser LIMIT 1")) {
@@ -204,7 +205,7 @@ function login_check($mysqli) {
                 // Si l’utilisateur existe, on récupère son mot de passe depuis la base
                 $password = $stmt->fetchColumn();
                 $login_check = hash('sha512', $password . $user_browser);
- 
+                //echo 'login_check:'.$login_check;
                 if ($login_check == $login_string) {
                     // Connecté!!!! 
 					// echo 'connecté';

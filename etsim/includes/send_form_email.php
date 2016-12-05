@@ -17,13 +17,14 @@ if (isset($_POST['contactform']) && $_POST['contactform'] == 'contactform') {
 			die();
 		}
 
-		if(!isset($_POST['name']) || !isset($_POST['email']) || !isset($_POST['message']) ) {
+		if(!isset($_POST['name']) || !isset($_POST['email']) || !isset($_POST['message']) || !isset($_POST['captcha']) ) {
 			died('We are sorry, but there appears to be a problem with the form you submitted.');       
 		}
 	 
 		$name = $_POST['name']; // required
 		$email = $_POST['email']; // required
 		$message = $_POST['message']; // required
+        $captcha = $_POST['captcha']; // required
 
 		$email_subject = "ETSIM Serious Game - Contact form by $name with mail $email";
 		$headers = "From: $email";
@@ -41,6 +42,10 @@ if (isset($_POST['contactform']) && $_POST['contactform'] == 'contactform') {
 		if(strlen($error_message) < 0) {
 			died($error_message);
 		}
+        
+        if($captcha != $_SESSION['captcha']['code']){
+            died("The captcha code is not correct!");
+        }
         
         // Envoi du mail de contact avec Swiftmailer       
         $transport = Swift_SmtpTransport::newInstance(GMAIL_SMTP, 465, GMAIL_ENCRYPTION)

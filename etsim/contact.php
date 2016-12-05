@@ -3,11 +3,18 @@
 * Created by : bryan.maisano@gmail.com
 * date * 05-10-2015
 */
-include_once 'includes/db_connect.php';
+session_start();
 include_once 'includes/functions.php';
-include_once 'includes/send_form_email.php';
 if(!isset($_SESSION))
     sec_session_start();
+
+
+include_once 'includes/db_connect.php';
+
+include_once 'includes/send_form_email.php';
+include_once 'includes/captcha/simple-php-captcha.php';
+
+$_SESSION['captcha'] = simple_php_captcha();
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -48,6 +55,14 @@ if(!isset($_SESSION))
 												<textarea name="message" id="message" placeholder="Message" rows="5"></textarea>
 											</div>
 										</div>
+                                        <div class="row 50%">
+                                                <div class="6u">
+                                                    <?php echo '<img src="' . $_SESSION['captcha']['image_src'] . '" alt="CAPTCHA code">';?>
+                                                </div>
+                                                <div class="6u">
+                                                    <input type="text" name="captcha" id="captcha" placeholder="Entrer le code" />
+                                                </div>                                  
+                                            </div>
 										<div class="row 50%">
 											<div class="12u">
 												<ul class="actions">
