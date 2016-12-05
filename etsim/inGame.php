@@ -66,7 +66,7 @@ if(!isset($_SESSION))
                                                     $_SESSION['roundGame']=$roundGame;
 												}
 											}
-											else if (isset($_POST['register_round']) && $_POST['register_round'] == 'register_round') {
+											else if (isset($_SESSION['register_round']) && $_SESSION['register_round'] == 'register_round') {
                                                 
                                                 echo 'Je suis dans Register ROund';
                                                 
@@ -78,7 +78,7 @@ if(!isset($_SESSION))
 																										INNER JOIN can_contains cc 
 																										ON erg.id_etsim_round_game = cc.id_etsim_round_game 
 																										WHERE cc.id_etsim_members = :idEtsimMember 
-																										AND cc.id_etsim_game = idEtsimGame 
+																										AND cc.id_etsim_game = :idEtsimGame 
 																										GROUP BY erg.number_etsim_round_game 
 																										ORDER BY erg.number_etsim_round_game 
 																										DESC LIMIT 1;")) {
@@ -94,6 +94,8 @@ if(!isset($_SESSION))
 													$roundGame = ($roundGame + 1);
                                                     $_SESSION['roundGame']=$roundGame;
 												}
+                                                unset($_SESSION['register_round']);
+                                                echo 'ça fonctionne';
 											}
                                             else
                                             {
@@ -241,6 +243,8 @@ if(!isset($_SESSION))
                                     
                                     <button href="javascript:void(0);" id='anc_add'>Add Row</button>
 									<button href="javascript:void(0);" id='anc_rem'>Remove Row</button>
+                                    
+                                    <form method="post" action="includes/register_round.php" >
 									<table id="tbl1" border="1" >
 										<tr>
 											<th>
@@ -272,7 +276,10 @@ if(!isset($_SESSION))
 											SelectRowsTempRound($mysqli, $idGame, $roundGame, $test);
 										?>
 									</table>
-										<input type="button" id="ConfirmValueForRound" value ="Register" class="'.$rowresultstmttableSelectGame['id_etsim_game'].'" />
+                                        <input type="submit" value="Register"/>
+                                  
+                                    </form>
+										
 									<?php  ?>
 								</article>
 							</div>

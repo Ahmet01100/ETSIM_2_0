@@ -356,9 +356,12 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
             $temprequest->bindParam(':idRound',$idRound);
 			$temprequest->execute();
 			//$tempresult=$temprequest->get_result();
-			if($r=$tempresult->fetch()){
+			if($r=$temprequest->fetch()){
 				if($r[0]>0)
-					return false;
+                {
+                    return false;
+                }
+					
 			}
 
 			if ($SelectRoundTemp = $mysqli->prepare("SELECT * FROM etsim_round_game_temp WHERE idetsimgame_etsim_round_game_temp = :idGame AND number_etsim_round_game_temp = :idRound AND finnish_etsim_round_game_temp = 1;")) {
@@ -389,7 +392,14 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 					if ($insertResults = $mysqli->prepare("REPLACE INTO etsim_round_game VALUES (:id, :idRound, :bidVol, :bidPrice, :demandeVoume, :marketPrice, :incomeEtsim, :costEtsim, :benefitEtsim, :captialEtsim);")) {
 						$insertResults->bindParam(':id', $id);
                         $insertResults->bindParam(':idRound', $idRound);
-                        $insertResults->bindParam(':bidVol', $rowresultSelectRoundTemp['bid_volume_etsim_round_game_temp']); $insertResults->bindParam(':bidPrice',$rowresultSelectRoundTemp['bid_price_etsim_round_game_temp']); $insertResults->bindParam(':demandeVoume',$rowresultSelectRoundTemp['demand_voume_etsim_round_game_temp']); $insertResults->bindParam(':marketPrice',$rowresultSelectRoundTemp['market_price_etsim_round_game_temp']); $insertResults->bindParam(':incomeEtsim',$rowresultSelectRoundTemp['income_etsim_round_game_temp']); $insertResults->bindParam(':costEtsim',$rowresultSelectRoundTemp['cost_etsim_round_game_temp']); $insertResults->bindParam(':benefitEtsim',$rowresultSelectRoundTemp['benefit_etsim_round_game_temp']); $insertResults->bindParam(':captialEtsim',$rowresultSelectRoundTemp['capital_etsim_round_game_temp']);
+                        $insertResults->bindParam(':bidVol', $rowresultSelectRoundTemp['bid_volume_etsim_round_game_temp']); 
+                        $insertResults->bindParam(':bidPrice',$rowresultSelectRoundTemp['bid_price_etsim_round_game_temp']); 
+                        $insertResults->bindParam(':demandeVoume',$rowresultSelectRoundTemp['demand_voume_etsim_round_game_temp']); 
+                        $insertResults->bindParam(':marketPrice',$rowresultSelectRoundTemp['market_price_etsim_round_game_temp']); 
+                        $insertResults->bindParam(':incomeEtsim',$rowresultSelectRoundTemp['income_etsim_round_game_temp']); 
+                        $insertResults->bindParam(':costEtsim',$rowresultSelectRoundTemp['cost_etsim_round_game_temp']); 
+                        $insertResults->bindParam(':benefitEtsim',$rowresultSelectRoundTemp['benefit_etsim_round_game_temp']); 
+                        $insertResults->bindParam(':captialEtsim',$rowresultSelectRoundTemp['capital_etsim_round_game_temp']);
                         
                         
 					//	$insertResults->execute();
