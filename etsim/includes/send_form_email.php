@@ -43,23 +43,27 @@ if (isset($_POST['contactform']) && $_POST['contactform'] == 'contactform') {
 			died($error_message);
 		}
         
-        if($captcha != $_SESSION['captcha']['code']){
+        /*if($captcha != $_SESSION['captcha']['code']){
             died("The captcha code is not correct!");
+        }*/
+        try {
+            // Envoi du mail de contact avec Swiftmailer       
+            $transport = Swift_SmtpTransport::newInstance(GMAIL_SMTP, 465, GMAIL_ENCRYPTION)
+                ->setUsername(GMAIL_ADMIN)
+                ->setPassword(GMAIL_PWD);
+
+            $mailer = Swift_Mailer::newInstance($transport);
+
+            $messageSwift = Swift_Message::newInstance($email_subject)
+              ->setFrom(array($email => $name))
+              ->setTo(array(GMAIL_ADMIN))
+              ->setBody($message."\n\nMail sender : ".$email);
+
+            $result = $mailer->send($messageSwift);
+            echo 'Send mail successful!<br/>';
+        } catch (Exception $e){
+            echo 'Problem while sending the mail (Exception : '.$e->getMessage().')<br/>';
         }
-        
-        // Envoi du mail de contact avec Swiftmailer       
-        $transport = Swift_SmtpTransport::newInstance(GMAIL_SMTP, 465, GMAIL_ENCRYPTION)
-            ->setUsername(GMAIL_ADMIN)
-            ->setPassword(GMAIL_PWD);
-
-        $mailer = Swift_Mailer::newInstance($transport);
-
-        $messageSwift = Swift_Message::newInstance($email_subject)
-          ->setFrom(array($email => $name))
-          ->setTo(array(GMAIL_ADMIN))
-          ->setBody($message."\n\nMail sender : ".$email);
-
-        $result = $mailer->send($messageSwift);
 	}
 }
 ?>
