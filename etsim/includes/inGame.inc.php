@@ -13,7 +13,9 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
 	function CurrentGameResults($mysqli, $idGame) {
 		$uId=$_SESSION['user_id'];
 		$tableSelectGameResults = "
-  SELECT erg.number_etsim_round_game,
+  SELECT 
+    erg.id_etsim_round_game,
+    erg.number_etsim_round_game,
  	sum(erg.bid_volume_etsim_round_game) as bid_volume_etsim_round_game,
  	erg.bid_price_etsim_round_game,
  	erg.demand_voume_etsim_round_game,
@@ -23,7 +25,9 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
  	sum(erg.cost_etsim_round_game) as cost_etsim_round_game,
  	sum(erg.benefit_etsim_round_game) as benefit_etsim_round_game
  	FROM (
-           SELECT erg.number_etsim_round_game,
+           SELECT 
+                erg.id_etsim_round_game,
+                erg.number_etsim_round_game,
  				 erg.bid_volume_etsim_round_game,
  			 	erg.bid_price_etsim_round_game,
  				erg.demand_voume_etsim_round_game,
@@ -45,7 +49,7 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
 			$benefarray=[];
 			$capital=0;
 			while($rowresultstmttableSelectGameResults = $stmttableSelectGameResults->fetch()) {
-				$idRoundGame = $rowresultstmttableSelectGameResults['id_round_etsim_game'];
+				$idRoundGame = $rowresultstmttableSelectGameResults['id_etsim_round_game'];
 				$roundarray[]=$rowresultstmttableSelectGameResults['number_etsim_round_game'];
 				$costarray[]=$rowresultstmttableSelectGameResults['cost_etsim_round_game'];
 				$profitarray[]=$rowresultstmttableSelectGameResults['income_etsim_round_game'];

@@ -359,6 +359,7 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 			if($r=$temprequest->fetch()){
 				if($r[0]>0)
                 {
+                    echo 'Le round a déjà été enregistré pour ce user';
                     return false;
                 }
 					
@@ -407,7 +408,7 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 					}
 					if ($SelectCanContains = $mysqli->prepare("SELECT * FROM can_contains WHERE id_etsim_game = :idGame AND id_etsim_members = :idMember GROUP BY id_etsim_plant_game_contains ORDER BY id_etsim_plant_game_contains;")) {
 						$SelectCanContains->bindParam(':idGame', $idGame);
-                        $SelectCanContains->bindParam(':idGame', $rowresultSelectRoundTemp['idetsimmember_etsim_round_game_temp']);
+                        $SelectCanContains->bindParam(':idMember', $rowresultSelectRoundTemp['idetsimmember_etsim_round_game_temp']);
 						$SelectCanContains->execute();
 						//$resultSelectCanContains = $SelectCanContains->get_result();
 						while($rowresultSelectCanContains = $SelectCanContains->fetch()) {
@@ -508,6 +509,19 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 			$updateGameLine->execute();
 			//$updateGameLine->close();
 		}
+        
+        
+        function setFinishToRoundTemp($mysqli,$idGame,$idMember){
+			$SQL="UPDATE etsim_round_game_temp 
+                  SET finnish_etsim_round_game_temp = 1
+                  WHERE idetsimgame_etsim_round_game_temp = :idGame
+                    ";
+			$setFinish=$mysqli->prepare($SQL);
+            $setFinish->bindParam(':idGame', $idGame);
+			$setFinish->execute();
+		}
+        
+        
 		function getMaxprice(){
 			return 180;
 		}

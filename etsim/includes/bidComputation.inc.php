@@ -30,9 +30,17 @@ function computebids(Array $array_input,$demand){
 
     $cumulatedVolume=getSumFromArray($volume_sorted_array,2);
     $i=0;
-    while($demand>=$cumulatedVolume[$i][2] && $i<sizeof($price_sorted_array)){
-        $i++;
+    try
+    {
+        while($demand>=$cumulatedVolume[$i][2] && $i<sizeof($price_sorted_array)){
+            $i++;
+        }
     }
+    catch(Exception $e)
+    {
+        echo $e->getMessage();
+    }
+    
     $cp=floatval($price_sorted_array[$i-1][1]);
     $q=$demand;
     $nbc=0;
