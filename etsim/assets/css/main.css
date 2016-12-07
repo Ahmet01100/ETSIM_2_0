@@ -2351,7 +2351,7 @@
 		position: relative;
 		display: inline-block;
 		overflow: auto;
-		height: 400px;
+		height: auto;
 	}
 
 		.box.post:after {
