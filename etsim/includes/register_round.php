@@ -15,7 +15,7 @@ if(!isset($_SESSION))
 
 }*/
   
- $_SESSION['register_round'] = 'register_round';
+$_SESSION['register_round'] = 'register_round';
 header('Location: ../inGame.php#divInsertTable');
 exit;
 ?>

@@ -35,7 +35,7 @@ if(!isset($_SESSION))
 										<?php
                                            
 											if (isset($_POST['goInGame']) && $_POST['goInGame'] == 'goInGame') {
-                                                //echo 'Je suis dans Go in game';
+                                               echo 'Je suis dans Go in game';
 												$Uid = $_SESSION['user_id'];
 												if ( (isset($_POST['id_etsim_game']) && !empty($_POST['id_etsim_game'])) && (isset($_POST['date_etsim_game']) && !empty($_POST['date_etsim_game'])) && (isset($_POST['description_etsim_game']) && !empty($_POST['description_etsim_game'])) ) {
 													// Nettoyez et validez les données transmises au script
@@ -51,37 +51,60 @@ if(!isset($_SESSION))
 																										GROUP BY erg.number_etsim_round_game
 																										ORDER BY erg.number_etsim_round_game 
 																										DESC LIMIT 1;")) {
-
 													$stmtSelectCurrentRoundNumber->execute();    // Exécute la déclaration.
 													//$stmtSelectCurrentRoundNumber->store_result();
 													// Récupère les variables dans le résultat
 													$stmtSelectCurrentRoundNumber->bindColumn('number_etsim_round_game',$roundGame);
 													$stmtSelectCurrentRoundNumber->fetch();
 													$roundGame = ($roundGame + 1);
-                                                    
                                                     $_SESSION['roundGame']=$roundGame;
+                                                    
 												}
 											}
 											else if (isset($_SESSION['register_round']) && $_SESSION['register_round'] == 'register_round') {
                                                 
-                                                echo 'Je suis dans Register Round';
-                                                
-                                        
-                                                
+                                                echo 'Je suis dans Register Round';                                                
 												if ( (isset($_POST['idetsimgame_etsim_round_game']) && !empty($_POST['idetsimgame_etsim_round_game'])) ) {
 													$idGame = $_POST['idetsimgame_etsim_round_game'];
-                                                    
 												}
                                                 else
                                                 {
+                                                    //echo 'Je suis dans le else';
                                                     $idGame = $_SESSION['id_etsim_game'];
                                                     $roundGame=$_SESSION['roundGame'];
                                                     $Uid = $_SESSION['user_id'];
                                                 }
-                                                
                                                 setFinishToRoundTemp($mysqli,$idGame,$_SESSION['user_id']);
                                                 
-												if ($stmtSelectCurrentRoundNumber = $mysqli->prepare("	SELECT erg.number_etsim_round_game 
+                                                 //Récupère le nb de joueur qui sont dans le jeu
+                                                $totalU = countUserTotalInGame($mysqli, $idGame);
+                                                // Récupère le nombre de joueurs qui ont terminé le round
+                                                $totalUF = countUserTotalInGameFinnishRound($mysqli, $idGame, $roundGame);
+                                                //Récupère le statut du jeu (Open, Play...)
+                                                echo "<br/>Nb dans le jeu:".$totalU;
+                                                echo "<br/>Nb fini:".$totalUF;
+                                                //Si tous les joueurs ont fini
+                                                if ( $totalU == $totalUF ) {
+                                                    echo "<br/>Je finis le round";
+                                                    //	echo '<script>alert()</script>';
+                                                    if(!applyRoundGame($mysqli, $idGame, $roundGame))
+                                                    {
+                                                       // echo '<script type="text/javascript">window.location=window.location.href;</script>';
+                                                        echo '<br/>Problème!!!!!!!';
+                                                        
+                                                    }
+                                                    else
+                                                    {
+                                                        $roundGame=++$_SESSION['roundGame'];
+                                                        
+                                                    }
+                                                        
+                                                        //die();
+                                                        
+                                                }
+                                                
+                                                
+												/*if ($stmtSelectCurrentRoundNumber = $mysqli->prepare("	SELECT erg.number_etsim_round_game 
 																										FROM etsim_round_game erg 
 																										INNER JOIN can_contains cc 
 																										ON erg.id_etsim_round_game = cc.id_etsim_round_game 
@@ -94,24 +117,43 @@ if(!isset($_SESSION))
                                                     $stmtSelectCurrentRoundNumber->bindParam(':idEtsimGame', $idGame);
 													$stmtSelectCurrentRoundNumber->execute();    // Exécute la déclaration.
 													//$stmtSelectCurrentRoundNumber->store_result();
-											 
+											        echo "Je suis dans la requete";
 													// Récupère les variables dans le résultat
 													$stmtSelectCurrentRoundNumber->bindColumn('number_etsim_round_game',$roundGame);
 													$stmtSelectCurrentRoundNumber->fetch();
 													$roundGame = ($roundGame + 1);
                                                     $_SESSION['roundGame']=$roundGame;
-												}
-                                                echo 'idGame:'.$idGame;
+                                                    echo '<br/>round: '.$_SESSION['roundGame'];
+												}*/
+                                                //echo 'idGame:'.$idGame;
                                                 unset($_SESSION['register_round']);
-                                                echo 'ça fonctionne';
                                                 
                                                 
+                                               
+                                                
+                                               // echo 'ça fonctionne';
 											}
                                         else
                                         {
+                                            echo 'Je suis dans else';    
                                             $idGame = $_SESSION['id_etsim_game'];
-                                            $roundGame=$_SESSION['roundGame'];
                                             $Uid = $_SESSION['user_id'];
+                                            $roundGame=$_SESSION['roundGame'];
+                                            
+                                           /* if ($stmtSelectCurrentRoundNumber = $mysqli->prepare("	SELECT erg.number_etsim_round_game 
+																										FROM etsim_round_game erg 
+																										WHERE erg.id_etsim_round_game like '$idGame-$Uid-%'
+																										GROUP BY erg.number_etsim_round_game
+																										ORDER BY erg.number_etsim_round_game 
+																										DESC LIMIT 1;")) {
+													$stmtSelectCurrentRoundNumber->execute();    // Exécute la déclaration.
+													//$stmtSelectCurrentRoundNumber->store_result();
+													// Récupère les variables dans le résultat
+													$stmtSelectCurrentRoundNumber->bindColumn('number_etsim_round_game',$roundGame);
+													$stmtSelectCurrentRoundNumber->fetch();
+													$roundGame = ($roundGame + 1);
+                                                    $_SESSION['roundGame']=$roundGame;
+												}*/
                                         }
                                             
                                         
@@ -145,19 +187,7 @@ if(!isset($_SESSION))
 												</th>
 											</tr>
 											<?php
-                                            //Récupère le nb de joueur qui sont dans le jeu
-											$totalU = countUserTotalInGame($mysqli, $idGame);
-                                            // Récupère le nombre de joueurs qui ont terminé le round
-											$totalUF = countUserTotalInGameFinnishRound($mysqli, $idGame, $roundGame);
-                                            //Récupère le statut du jeu (Open, Play...)
-											$currentStatusRoundGame = statusCurrentRoundGame($mysqli, $idGame, $roundGame);
-											//Si tous les joueurs ont fini
-											if ( $totalU == $totalUF ) {
-												//	echo '<script>alert()</script>';
-												if(!applyRoundGame($mysqli, $idGame, $roundGame))
-													//die();
-													echo '<script type="text/javascript">window.location=window.location.href;</script>';
-											}
+                                                $currentStatusRoundGame = statusCurrentRoundGame($mysqli, $idGame, $roundGame);
 												CurrentGameResults($mysqli, $idGame);
 											?>
 										</table>
@@ -189,6 +219,7 @@ if(!isset($_SESSION))
 												</th>
 											</tr>
 											<?php
+                                                
 												CurrentGamePlants($mysqli, $idGame);		
 												$clock = showtimeround($mysqli, $idGame, $roundGame);
 												$demandPower = showdemandPowerround($mysqli, $idGame, $roundGame);

@@ -9,6 +9,7 @@
  * @param $bidarray must be an array of an array : [ [type,price,volume] ...]
  */
 function computebids(Array $array_input,$demand){
+    
     $temBid=[];
     $rejected=[];
     //echo "longueur" . sizeof($array_input);
@@ -28,11 +29,12 @@ function computebids(Array $array_input,$demand){
     $volume_sorted_array=$bidarray;
     usort($volume_sorted_array,"custom_sort_2");
 
+    //var_dump($volume_sorted_array);
     $cumulatedVolume=getSumFromArray($volume_sorted_array,2);
     $i=0;
     try
     {
-        while($demand>=$cumulatedVolume[$i][2] && $i<sizeof($price_sorted_array)){
+        while($i<sizeof($price_sorted_array) && $demand>=$cumulatedVolume[$i][2]){
             $i++;
         }
     }
@@ -45,7 +47,7 @@ function computebids(Array $array_input,$demand){
     $q=$demand;
     $nbc=0;
     $equbidvol=[];
-    $volToShare=$q-$cumulatedVolume[$i][2];
+    $volToShare=$q-$cumulatedVolume[$i-1][2];
     foreach ($price_sorted_array as $p){
         if($p[1]==$cp){
             if($p[2]!=0)

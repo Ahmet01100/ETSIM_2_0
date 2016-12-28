@@ -390,7 +390,7 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 					$demand=$rowresultSelectRoundTemp['demand_voume_etsim_round_game_temp'];
 					//die();
 					$id = $rowresultSelectRoundTemp['idetsimgame_etsim_round_game_temp']	.'-'.$rowresultSelectRoundTemp['idetsimmember_etsim_round_game_temp'].'-'.$rowresultSelectRoundTemp['number_etsim_round_game_temp'].'-'.$rowresultSelectRoundTemp['line_etsim_round_game_temp'];
-					if ($insertResults = $mysqli->prepare("REPLACE INTO etsim_round_game VALUES (:id, :idRound, :bidVol, :bidPrice, :demandeVoume, :marketPrice, :incomeEtsim, :costEtsim, :benefitEtsim, :captialEtsim);")) {
+					if ($insertResults = $mysqli->prepare("REPLACE INTO etsim_round_game VALUES (:id, :idRound, :bidVol, :bidPrice, :demandeVoume, :marketPrice, :incomeEtsim, :costEtsim, :benefitEtsim, :capitalEtsim);")) {
 						$insertResults->bindParam(':id', $id);
                         $insertResults->bindParam(':idRound', $idRound);
                         $insertResults->bindParam(':bidVol', $rowresultSelectRoundTemp['bid_volume_etsim_round_game_temp']); 
@@ -400,7 +400,7 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
                         $insertResults->bindParam(':incomeEtsim',$rowresultSelectRoundTemp['income_etsim_round_game_temp']); 
                         $insertResults->bindParam(':costEtsim',$rowresultSelectRoundTemp['cost_etsim_round_game_temp']); 
                         $insertResults->bindParam(':benefitEtsim',$rowresultSelectRoundTemp['benefit_etsim_round_game_temp']); 
-                        $insertResults->bindParam(':captialEtsim',$rowresultSelectRoundTemp['capital_etsim_round_game_temp']);
+                        $insertResults->bindParam(':capitalEtsim',$rowresultSelectRoundTemp['capital_etsim_round_game_temp']);
                         
                         
 					//	$insertResults->execute();
@@ -413,12 +413,16 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 						//$resultSelectCanContains = $SelectCanContains->get_result();
 						while($rowresultSelectCanContains = $SelectCanContains->fetch()) {
 							if ($InsertIntoCanContains = $mysqli->prepare("INSERT INTO can_contains (id_etsim_plant_game_contains, id_etsim_game, id_etsim_members, id_etsim_round_game) VALUES (:idEtsimPlant, :idEtsimGame, :idEtsimMember, :idEtsimRound);")) {
+                                echo "<br/>je fais un insert dans can contains";
 								$InsertIntoCanContains->bindParam(':idEtsimPlant',$rowresultSelectCanContains['id_etsim_plant_game_contains']);
                                 $InsertIntoCanContains->bindParam(':idEtsimGame',$idGame);
                                 $InsertIntoCanContains->bindParam(':idEtsimMember',$rowresultSelectRoundTemp['idetsimmember_etsim_round_game_temp']);
                                 $InsertIntoCanContains->bindParam(':idEtsimRound',$id);
 								$InsertIntoCanContains->execute();
+                                //$InsertIntoCanContains->debugDumpParams();
 								//$InsertIntoCanContains->close();
+                                //echo "<br/>Voici la requete: ";
+                                
 							}
 						}
 					}
@@ -448,7 +452,7 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 							$tempArray[1]=0;
 						}
 						//echo $tempArray[1].' '.$tempArray[2].' </br>';
-					//	var_dump($tempArray);
+						//var_dump($tempArray);
 						$valueArray[]=$tempArray;
 
 					}
@@ -472,6 +476,7 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 					$benefit=$income-floatval($cost);
 					updateGameLine($mysqli,$idGame,$idRound,$idMember,$idLine,$volume,$price,$demand,$cp,$income,$benefit,$cost);
 				}
+                //var_dump($plantcost);
 				foreach($result[3] as $r){
 					$cp =$result[1];
 					$idMember=$r[0][0];
@@ -479,7 +484,7 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 					$price=$r[1];
 					$volume=$r[2];
 					$plantcost=$r[3];
-					$cost=floatval($plantcost["v_costs_etsim_members_have"])*floatval($volume)+floatval($plantcost["cost_mw_etsim_plant"]);
+					$cost=floatval($plantcost["v_costs_etsim_members_have"])*floatval($volume)+floatval($plantcost["fixed_costs_etsim_plant"]);
 					$benefit=-floatval($cost);
 					updateGameLine($mysqli,$idGame,$idRound,$idMember,$idLine,$volume,$price,$demand,$cp,0,$benefit,$cost);
 				}
