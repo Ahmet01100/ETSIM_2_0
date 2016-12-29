@@ -6,7 +6,6 @@
     include_once 'includes/db_connect.php';
     include_once 'includes/functions.php';
     include_once 'includes/functions.php';
-        
     if(!isset($_SESSION))
         sec_session_start();
     $idGame = $_SESSION['id_etsim_game'];
@@ -16,10 +15,18 @@
 ?>
         <title>Statistiques</title>
         <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
-       
+        <script src="assets/js/jquery.min.js"></script>
+        <script src="assets/js/jquery.dropotron.min.js"></script>
+        <script src="assets/js/skel.min.js"></script>
+        <script src="assets/js/util.js"></script>
+        <!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+        <script src="assets/js/main.js"></script>
+
+        <script src="/assets/js/flipclock/flipclock.min.js"></script>		
         <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
         <script src="includes/chart/js/highcharts.js"></script>
         <script src="includes/chart/js/modules/exporting.js"></script>
+    
 
         <?php 
         
@@ -28,12 +35,8 @@
         ?>
         <link rel="stylesheet" href="assets/css/main.css" />
         <link rel="stylesheet" href="/assets/css/flipclock.css">
-   
-   
     </head>
     
-   
-	 
     <body>
         <div id="page-wrapper">
              <!-- Navigation Bar -->
