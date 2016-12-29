@@ -173,6 +173,41 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
 			$error_msg .= "Error count round game !";
 		}
 	}
+    function listMembersStatus($cnn,$idGame,$numRound)
+    {
+        $req="  SELECT username_etsim_members
+                , CASE
+                    WHEN IFNULL(nblignes,0) = 0 THEN 'En attente'
+                    ELSE 'Terminé' END AS nbLignes
+                FROM can_contains cc
+                INNER JOIN etsim_members em
+                ON cc.id_etsim_members= em.id_etsim_members
+                LEFT JOIN 
+                (SELECT idetsimmember_etsim_round_game_temp, COUNT(*) as nblignes 
+                FROM etsim_round_game_temp 
+                WHERE idetsimgame_etsim_round_game_temp = :idGame AND number_etsim_round_game_temp = :numRound AND finnish_etsim_round_game_temp = 1 
+                GROUP BY idetsimmember_etsim_round_game_temp
+                ) as lj
+                ON em.id_etsim_members = lj.idetsimmember_etsim_round_game_temp
+
+                WHERE id_etsim_game = :idGame 
+                GROUP BY id_etsim_game, cc.id_etsim_members 
+                ORDER BY cc.id_etsim_members;";
+
+        $reponse= $cnn->prepare($req);
+        $reponse->bindParam(':idGame', $idGame);
+        $reponse->bindParam(':numRound', $numRound);
+
+        $liste =array();
+        if($reponse->execute())
+        {
+             while ($donnees = $reponse->fetch())
+            {
+                array_push($liste,array($donnees['username_etsim_members'],$donnees['nbLignes']));
+            }
+        }
+        return $liste;
+    }
 	
 	function InsertRowsRoundGame($mysqli, $idGame, $numberRoundGame, $demand) {
 		

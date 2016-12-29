@@ -59,7 +59,34 @@ if(!isset($_SESSION))
 													$roundGame = ($roundGame + 1);
                                                     $_SESSION['roundGame']=$roundGame;
                                                     
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
 												}
+                                                 //Récupère le nb de joueur qui sont dans le jeu
+                                                $totalU = countUserTotalInGame($mysqli, $idGame);
+                                                // Récupère le nombre de joueurs qui ont terminé le round
+                                                $totalUF = countUserTotalInGameFinnishRound($mysqli, $idGame, $roundGame);
+                                                //Récupère le statut du jeu (Open, Play...)
+                                                echo "<br/>Nb dans le jeu:".$totalU;
+                                                echo "<br/>Nb fini:".$totalUF;
+                                                //Si tous les joueurs ont fini
+                                                if ( $totalU == $totalUF ) {
+                                                    echo "<br/>Je finis le round";
+                                                    //	echo '<script>alert()</script>';
+                                                    if(!applyRoundGame($mysqli, $idGame, $roundGame))
+                                                    {
+                                                       // echo '<script type="text/javascript">window.location=window.location.href;</script>';
+                                                        echo '<br/>Problème!!!!!!!';
+                                                    }
+                                                    else
+                                                    {
+                                                        $roundGame=++$_SESSION['roundGame'];
+                                                    }
+                                                        //die();
+                                                }
 											}
 											else if (isset($_SESSION['register_round']) && $_SESSION['register_round'] == 'register_round') {
                                                 
@@ -91,19 +118,13 @@ if(!isset($_SESSION))
                                                     {
                                                        // echo '<script type="text/javascript">window.location=window.location.href;</script>';
                                                         echo '<br/>Problème!!!!!!!';
-                                                        
                                                     }
                                                     else
                                                     {
                                                         $roundGame=++$_SESSION['roundGame'];
-                                                        
                                                     }
-                                                        
                                                         //die();
-                                                        
                                                 }
-                                                
-                                                
 												/*if ($stmtSelectCurrentRoundNumber = $mysqli->prepare("	SELECT erg.number_etsim_round_game 
 																										FROM etsim_round_game erg 
 																										INNER JOIN can_contains cc 
@@ -127,10 +148,6 @@ if(!isset($_SESSION))
 												}*/
                                                 //echo 'idGame:'.$idGame;
                                                 unset($_SESSION['register_round']);
-                                                
-                                                
-                                               
-                                                
                                                // echo 'ça fonctionne';
 											}
                                         else
@@ -140,6 +157,28 @@ if(!isset($_SESSION))
                                             $Uid = $_SESSION['user_id'];
                                             $roundGame=$_SESSION['roundGame'];
                                             
+                                             //Récupère le nb de joueur qui sont dans le jeu
+                                                $totalU = countUserTotalInGame($mysqli, $idGame);
+                                                // Récupère le nombre de joueurs qui ont terminé le round
+                                                $totalUF = countUserTotalInGameFinnishRound($mysqli, $idGame, $roundGame);
+                                                //Récupère le statut du jeu (Open, Play...)
+                                                echo "<br/>Nb dans le jeu:".$totalU;
+                                                echo "<br/>Nb fini:".$totalUF;
+                                                //Si tous les joueurs ont fini
+                                                if ( $totalU == $totalUF ) {
+                                                    echo "<br/>Je finis le round";
+                                                    //	echo '<script>alert()</script>';
+                                                    if(!applyRoundGame($mysqli, $idGame, $roundGame))
+                                                    {
+                                                       // echo '<script type="text/javascript">window.location=window.location.href;</script>';
+                                                        echo '<br/>Problème!!!!!!!';
+                                                    }
+                                                    else
+                                                    {
+                                                        $roundGame=++$_SESSION['roundGame'];
+                                                    }
+                                                        //die();
+                                                }
                                            /* if ($stmtSelectCurrentRoundNumber = $mysqli->prepare("	SELECT erg.number_etsim_round_game 
 																										FROM etsim_round_game erg 
 																										WHERE erg.id_etsim_round_game like '$idGame-$Uid-%'
@@ -155,9 +194,28 @@ if(!isset($_SESSION))
                                                     $_SESSION['roundGame']=$roundGame;
 												}*/
                                         }
+                                    
+                                        
                                             
                                         
 										?>
+                                    <a href="#openModal">Show other players status</a>
+                                    <div id="openModal" class="modalDialog">
+                                        <div>
+                                            <a href="#close" title="Close" class="close">X</a>
+                                            <h2>Status</h2>
+                                            <?php 
+                                            $liste=listMembersStatus($mysqli, $idGame, $roundGame);
+                                            foreach($liste as $donnee)
+                                            {
+                                                echo '<p>'.$donnee[0].'&nbsp'.$donnee[1].'</p>';
+                                            }
+                                            
+                                            
+                                            
+                                            ?>
+                                        </div>
+                                    </div>
 									<canvas id="myChart" width="400" height="200"></canvas>
 									<table>
 											<tr>
@@ -235,15 +293,24 @@ if(!isset($_SESSION))
 									<?php	die();?>
 									<?php endif ?>
 									<div id="divInsertTable" class="container">
+                                        
 										<article>
 											<header id="<?php echo $idGame; ?>" class="head_idGame">
                                                 <h2 id="<?php echo $roundGame; ?>" class="round_number">INSERT TABLE ROUND N°<?php echo $roundGame; ?></h2>
+                                                
+
+
+
                                                 <p id="<?php echo $demandPower ;?>" class="demand_power">DEMAND POWER = <font color="red"><?php echo $demandPower;?></font> MW </p>
                                                 <div class="box post2">
                                                     <div id="<?php echo $clock; ?>" class="clock" style="margin:2em;"></div>
                                                     <div class="message"></div>
                                                 </div>
                                             </header>
+                                            
+                                            
+                                            
+                                            
 										</article>
 									</div>
                                     <?php 
@@ -355,6 +422,8 @@ if(!isset($_SESSION))
 
 			<!-- Copyright -->
 				<?php include_once 'includes/layout/CopyrightBar.php'; ?>
+            
+            
 		</div>
 	<script>initVolumeLookup();</script>
 	</body>
