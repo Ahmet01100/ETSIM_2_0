@@ -3,12 +3,12 @@
 </style>
 
 <?php
-
-    /*$liste=listerPerformances($connexion,$_SESSION['idUtilisateur']);
+    include_once 'includes/inGame.inc.php';
+    $liste=listCurrentGameResults($mysqli, $_SESSION['id_etsim_game']);
     if(empty($liste)==true)
     {
         echo '<p>Il n\'y a aucune performance pour le moment</p>';
-    }*/
+    }
     echo "
              <script type=\"text/javascript\">
                     $(function () {
@@ -22,16 +22,16 @@
                                 x: -20
                             },
                             xAxis: {
-                                categories: [1,2,3,";
-                            /*foreach ($liste as $performance) 
+                                categories: [";
+                            foreach ($liste as $stats) 
                             {
-                                echo "'".$performance[9]."',";
-                            }*/
+                                echo "'".$stats[0]."',";
+                            }
                         echo "
                             ]},
                             yAxis: {
                                 title: {
-                                    text: 'Mesures en cm'
+                                    text: 'Unités'
                                 },
                                 plotLines: [{
                                     value: 0,
@@ -40,7 +40,7 @@
                                 }]
                             },
                             tooltip: {
-                                valueSuffix: 'cm'
+                                valueSuffix: 'unités'
                             },
                             legend: {
                                 layout: 'vertical',
@@ -49,141 +49,68 @@
                                 borderWidth: 0
                             },
                             series: [{
-                                name: 'Bras',
-                                data: [15,20,35,";
-                                /*foreach ($liste as $performance) 
+                                name: 'Bid volume',
+                                data: [";
+                                foreach ($liste as $stats) 
                                 {
-                                    echo $performance[4].",";
-                                }*/
+                                    echo $stats[1].",";
+                                }
                         echo "
                                 ]}, {
-                                name: 'Poitrine',
-                                data: [35,69,87,
+                                name: 'Demande volume',
+                                data: [
                                 ";
-                                /*foreach ($liste as $performance) 
+                                foreach ($liste as $stats) 
                                 {
-                                    echo $performance[6].",";
-                                }*/
+                                    echo $stats[2].",";
+                                }
                         echo "
                                 ]}, {
-                                name: 'Cuisse',
-                                data: [100,68,92,
+                                name: 'Market price',
+                                data: [
                                 ";
-                                /*foreach ($liste as $performance) 
+                                foreach ($liste as $stats) 
                                 {
-                                    echo $performance[7].",";
-                                }*/
+                                    echo $stats[3].",";
+                                }
                         echo "
                                 ]},
                             {
-                                name: 'Epaules',
-                                data: [22,33,44,";
-                               /* foreach ($liste as $performance) 
+                                name: 'Income',
+                                data: [";
+                                foreach ($liste as $stats) 
                                 {
-                                    echo $performance[5].",";
-                                }*/
+                                    echo $stats[4].",";
+                                }
                         echo "
                                 ]},
                             {
-                                name: 'Masse graisseuse',
-                                data: [68,99,54,
+                                name: 'Costs',
+                                data: [
                                 
                                 ";
-                               /* foreach ($liste as $performance) 
+                                foreach ($liste as $stats) 
                                 {
-                                    echo $performance[10].",";
-                                }*/
+                                    echo $stats[5].",";
+                                }
 
                         echo "
                                 ]},
                             {
-                                name: 'Tour de taille',
-                                data: [45,68,65,
+                                name: 'Benefit',
+                                data: [
                                 ";
-                                /*foreach ($liste as $performance) 
+                                foreach ($liste as $stats) 
                                 {
-                                    echo $performance[8].",";
-                                }*/
+                                    echo $stats[6].",";
+                                }
 
                         echo "
                                 ]
                             }]
                         });
                     });
-                    
 
-
-                    $(function () {
-                        $('#containerColumn').highcharts({
-                            chart: {
-                                type: 'column'
-                            },
-                            title: {
-                                text: 'Evolution du poids'
-                            },
-                            subtitle: {
-                                text: ''
-                            },
-                            xAxis: {
-                                type: 'category',
-                                labels: {
-                                    rotation: -45,
-                                    style: {
-                                        fontSize: '13px',
-                                        fontFamily: 'Verdana, sans-serif'
-                                    }
-                                }
-                            },
-                            yAxis: {
-                                min: 0,
-                                title: {
-                                    text: 'Population (millions)'
-                                }
-                            },
-                            legend: {
-                                enabled: false
-                            },
-                            tooltip: {
-                                pointFormat: 'Poids'
-                            },
-                            series: [{
-                                name: 'Population',
-                                data: [
-                                
-                                    ";
-                           /* foreach ($liste as $performance) 
-                            {
-                                echo "['".$performance[9]."',".$performance[2]."],";
-
-
-                            }*/
-
-                            echo "['1',25],";
-                            echo "['2',35],";
-                            echo "['3',45],";
-                            echo "['4',65],";
-                            echo "['5',55],";
-
-
-            echo "
-                                  
-
-                                ],
-                                dataLabels: {
-                                    enabled: true,
-                                    rotation: -90,
-                                    color: '#FFFFFF',
-                                    align: 'right',
-                                    format: '{point.y:.1f}', // one decimal
-                                    y: 10, // 10 pixels down from the top
-                                    style: {
-                                        fontSize: '13px',
-                                        fontFamily: 'Verdana, sans-serif'
-                                    }
-                                }
-                            }]
-                        });
-                    });
                 </script>
                 ";
 

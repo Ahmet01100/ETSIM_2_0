@@ -100,6 +100,46 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
 
 		//$stmttableSelectGameResults->close();
 	}
+    
+    function listCurrentGameResults($mysqli, $idGame) {
+		$uId=$_SESSION['user_id'];
+		$tableSelectGameResults = "
+          SELECT 
+            erg.id_etsim_round_game,
+            erg.number_etsim_round_game,
+            sum(erg.bid_volume_etsim_round_game) as bid_volume_etsim_round_game,
+            erg.bid_price_etsim_round_game,
+            erg.demand_voume_etsim_round_game,
+            erg.market_price_etsim_round_game,
+            sum(erg.income_etsim_round_game) as income_etsim_round_game,
+            (sum(success)/count(*))*100 as ratio,
+            sum(erg.cost_etsim_round_game) as cost_etsim_round_game,
+            sum(erg.benefit_etsim_round_game) as benefit_etsim_round_game
+            FROM (
+                   SELECT 
+                        erg.id_etsim_round_game,
+                        erg.number_etsim_round_game,
+                         erg.bid_volume_etsim_round_game,
+                        erg.bid_price_etsim_round_game,
+                        erg.demand_voume_etsim_round_game,
+                        erg.market_price_etsim_round_game,
+                        erg.income_etsim_round_game,
+                        if(erg.income_etsim_round_game <=0,if(erg.bid_volume_etsim_round_game=0,1,0),1) as success,
+                        erg.cost_etsim_round_game,
+                        erg.benefit_etsim_round_game as benefit_etsim_round_game
+                    from etsim_round_game erg
+                    WHERE erg.id_etsim_round_game like '$idGame-$uId-%' and erg.number_etsim_round_game>0) erg
+                    group by number_etsim_round_game
+        ";
+        $liste =array();
+        if( $stmttableSelectGameResults = $mysqli->prepare($tableSelectGameResults) ) {
+            $stmttableSelectGameResults->execute();
+            while($donnees = $stmttableSelectGameResults->fetch()) {
+                array_push($liste,array($donnees['number_etsim_round_game'],$donnees['bid_volume_etsim_round_game'],$donnees['demand_voume_etsim_round_game'],$donnees['market_price_etsim_round_game'],$donnees['income_etsim_round_game'],$donnees['cost_etsim_round_game'],$donnees['benefit_etsim_round_game'],$donnees['ratio']));
+            }
+	   }
+      return $liste;
+    }
 	
 	function CurrentGamePlants($mysqli, $idGame) {
 		$tableSelectPlantMember = "SELECT id_etsim_plant_game_contains FROM can_contains WHERE id_etsim_game = :idEtsimGame AND id_etsim_members = :idEtsimMeber GROUP BY id_etsim_plant_game_contains ORDER BY id_etsim_plant_game_contains;";

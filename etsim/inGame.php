@@ -35,7 +35,7 @@ if(!isset($_SESSION))
 										<?php
                                            
 											if (isset($_POST['goInGame']) && $_POST['goInGame'] == 'goInGame') {
-                                               echo 'Je suis dans Go in game';
+                                               //echo 'Je suis dans Go in game';
 												$Uid = $_SESSION['user_id'];
 												if ( (isset($_POST['id_etsim_game']) && !empty($_POST['id_etsim_game'])) && (isset($_POST['date_etsim_game']) && !empty($_POST['date_etsim_game'])) && (isset($_POST['description_etsim_game']) && !empty($_POST['description_etsim_game'])) ) {
 													// Nettoyez et validez les données transmises au script
@@ -58,23 +58,17 @@ if(!isset($_SESSION))
 													$stmtSelectCurrentRoundNumber->fetch();
 													$roundGame = ($roundGame + 1);
                                                     $_SESSION['roundGame']=$roundGame;
-                                                    
-                                                    
-                                                    
-                                                    
-                                                    
-                                                    
 												}
                                                  //Récupère le nb de joueur qui sont dans le jeu
                                                 $totalU = countUserTotalInGame($mysqli, $idGame);
                                                 // Récupère le nombre de joueurs qui ont terminé le round
                                                 $totalUF = countUserTotalInGameFinnishRound($mysqli, $idGame, $roundGame);
                                                 //Récupère le statut du jeu (Open, Play...)
-                                                echo "<br/>Nb dans le jeu:".$totalU;
-                                                echo "<br/>Nb fini:".$totalUF;
+                                                /*echo "<br/>Nb dans le jeu:".$totalU;
+                                                echo "<br/>Nb fini:".$totalUF;*/
                                                 //Si tous les joueurs ont fini
                                                 if ( $totalU == $totalUF ) {
-                                                    echo "<br/>Je finis le round";
+                                                    //echo "<br/>Je finis le round";
                                                     //	echo '<script>alert()</script>';
                                                     if(!applyRoundGame($mysqli, $idGame, $roundGame))
                                                     {
@@ -90,7 +84,7 @@ if(!isset($_SESSION))
 											}
 											else if (isset($_SESSION['register_round']) && $_SESSION['register_round'] == 'register_round') {
                                                 
-                                                echo 'Je suis dans Register Round';                                                
+                                                //echo 'Je suis dans Register Round';                                                
 												if ( (isset($_POST['idetsimgame_etsim_round_game']) && !empty($_POST['idetsimgame_etsim_round_game'])) ) {
 													$idGame = $_POST['idetsimgame_etsim_round_game'];
 												}
@@ -112,7 +106,7 @@ if(!isset($_SESSION))
                                                 echo "<br/>Nb fini:".$totalUF;
                                                 //Si tous les joueurs ont fini
                                                 if ( $totalU == $totalUF ) {
-                                                    echo "<br/>Je finis le round";
+                                                    //echo "<br/>Je finis le round";
                                                     //	echo '<script>alert()</script>';
                                                     if(!applyRoundGame($mysqli, $idGame, $roundGame))
                                                     {
@@ -152,7 +146,7 @@ if(!isset($_SESSION))
 											}
                                         else
                                         {
-                                            echo 'Je suis dans else';    
+                                            //echo 'Je suis dans else';    
                                             $idGame = $_SESSION['id_etsim_game'];
                                             $Uid = $_SESSION['user_id'];
                                             $roundGame=$_SESSION['roundGame'];
@@ -162,8 +156,8 @@ if(!isset($_SESSION))
                                                 // Récupère le nombre de joueurs qui ont terminé le round
                                                 $totalUF = countUserTotalInGameFinnishRound($mysqli, $idGame, $roundGame);
                                                 //Récupère le statut du jeu (Open, Play...)
-                                                echo "<br/>Nb dans le jeu:".$totalU;
-                                                echo "<br/>Nb fini:".$totalUF;
+                                                /*echo "<br/>Nb dans le jeu:".$totalU;
+                                                echo "<br/>Nb fini:".$totalUF;*/
                                                 //Si tous les joueurs ont fini
                                                 if ( $totalU == $totalUF ) {
                                                     echo "<br/>Je finis le round";
@@ -210,12 +204,10 @@ if(!isset($_SESSION))
                                             {
                                                 echo '<p>'.$donnee[0].'&nbsp'.$donnee[1].'</p>';
                                             }
-                                            
-                                            
-                                            
                                             ?>
                                         </div>
                                     </div>
+                                    &nbsp;<a href="./stats.php">Show my results</a>
 									<canvas id="myChart" width="400" height="200"></canvas>
 									<table>
 											<tr>
