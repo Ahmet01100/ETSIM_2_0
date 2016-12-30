@@ -6,12 +6,13 @@
     include_once 'includes/db_connect.php';
     include_once 'includes/functions.php';
     include_once 'includes/functions.php';
+    include_once 'includes/inGame.inc.php';
     if(!isset($_SESSION))
         sec_session_start();
     $idGame = $_SESSION['id_etsim_game'];
     $Uid = $_SESSION['user_id'];
     $roundGame=$_SESSION['roundGame'];
-        
+  
 ?>
         <title>Statistiques</title>
         <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
@@ -31,7 +32,6 @@
         <?php 
         
         include('includes/containerChart.inc.php'); 
-        include_once 'includes/inGame.inc.php';
         ?>
         <link rel="stylesheet" href="assets/css/main.css" />
         <link rel="stylesheet" href="/assets/css/flipclock.css">
@@ -78,6 +78,18 @@
                                 //$currentStatusRoundGame = statusCurrentRoundGame($mysqli, $idGame, $roundGame);
                                 CurrentGameResults($mysqli, $idGame);
                             ?>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><a href="./exportCsv.php">Export to CSV</a></td>
+                                
+                            
+                            </tr>
                         </table>
 
                        
