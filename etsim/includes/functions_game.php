@@ -413,7 +413,7 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 						//$resultSelectCanContains = $SelectCanContains->get_result();
 						while($rowresultSelectCanContains = $SelectCanContains->fetch()) {
 							if ($InsertIntoCanContains = $mysqli->prepare("INSERT INTO can_contains (id_etsim_plant_game_contains, id_etsim_game, id_etsim_members, id_etsim_round_game) VALUES (:idEtsimPlant, :idEtsimGame, :idEtsimMember, :idEtsimRound);")) {
-                                echo "<br/>je fais un insert dans can contains";
+                                //echo "<br/>je fais un insert dans can contains";
 								$InsertIntoCanContains->bindParam(':idEtsimPlant',$rowresultSelectCanContains['id_etsim_plant_game_contains']);
                                 $InsertIntoCanContains->bindParam(':idEtsimGame',$idGame);
                                 $InsertIntoCanContains->bindParam(':idEtsimMember',$rowresultSelectRoundTemp['idetsimmember_etsim_round_game_temp']);

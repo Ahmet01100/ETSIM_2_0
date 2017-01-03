@@ -215,24 +215,51 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
 	}
     function listMembersStatus($cnn,$idGame,$numRound)
     {
-        $req="  SELECT username_etsim_members
-                , CASE
-                    WHEN IFNULL(nblignes,0) = 0 THEN 'En attente'
-                    ELSE 'Terminé' END AS nbLignes
-                FROM can_contains cc
-                INNER JOIN etsim_members em
-                ON cc.id_etsim_members= em.id_etsim_members
-                LEFT JOIN 
-                (SELECT idetsimmember_etsim_round_game_temp, COUNT(*) as nblignes 
-                FROM etsim_round_game_temp 
-                WHERE idetsimgame_etsim_round_game_temp = :idGame AND number_etsim_round_game_temp = :numRound AND finnish_etsim_round_game_temp = 1 
-                GROUP BY idetsimmember_etsim_round_game_temp
-                ) as lj
-                ON em.id_etsim_members = lj.idetsimmember_etsim_round_game_temp
+        $req="  
+        SELECT 
+            username_etsim_members
+            , CASE
+                WHEN IFNULL(nblignes,0) = 0 THEN 'En attente'
+                ELSE 'Terminé' END AS nbLignes
+        FROM can_contains cc
+        INNER JOIN etsim_members em
+        ON cc.id_etsim_members= em.id_etsim_members
+        LEFT JOIN 
+        (SELECT idetsimmember_etsim_round_game_temp, COUNT(*) as nblignes 
+        FROM etsim_round_game_temp 
+        WHERE idetsimgame_etsim_round_game_temp = :idGame AND number_etsim_round_game_temp = :numRound AND finnish_etsim_round_game_temp = 1 
+        GROUP BY idetsimmember_etsim_round_game_temp
+        ) as lj
+        ON em.id_etsim_members = lj.idetsimmember_etsim_round_game_temp
+        LEFT JOIN
+        (
+            SELECT 
+                substring_index(substring_index(id_etsim_round_game,'-',2),'-',-1) as memberId,
+                SUM(benefit_etsim_round_game) as Benefit
+            FROM
+            (
+                SELECT
+                erg.id_etsim_round_game,
+                sum(erg.benefit_etsim_round_game) as benefit_etsim_round_game
+                FROM (
+                       SELECT 
+                            erg.id_etsim_round_game,
+                            erg.benefit_etsim_round_game as benefit_etsim_round_game
+                        from etsim_round_game erg
+                        WHERE erg.id_etsim_round_game like '$idGame-%' and erg.number_etsim_round_game>0
+                    ) erg
+                 group by id_etsim_round_game
+                ) mareq
+                group by substring_index(substring_index(id_etsim_round_game,'-',2),'-',-1)
+                order by 2 desc
 
-                WHERE id_etsim_game = :idGame 
-                GROUP BY id_etsim_game, cc.id_etsim_members 
-                ORDER BY cc.id_etsim_members;";
+        ) as classement
+        ON em.id_etsim_members = classement.memberId
+
+        WHERE id_etsim_game = :idGame 
+        GROUP BY id_etsim_game, cc.id_etsim_members 
+        ORDER BY classement.Benefit desc;
+";
 
         $reponse= $cnn->prepare($req);
         $reponse->bindParam(':idGame', $idGame);

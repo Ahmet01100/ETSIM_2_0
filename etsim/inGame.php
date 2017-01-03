@@ -200,9 +200,11 @@ if(!isset($_SESSION))
                                             <h2>Status</h2>
                                             <?php 
                                             $liste=listMembersStatus($mysqli, $idGame, $roundGame);
+                                            $i=1;
                                             foreach($liste as $donnee)
                                             {
-                                                echo '<p>'.$donnee[0].'&nbsp'.$donnee[1].'</p>';
+                                                echo '<p>'.$i.'&nbsp;'.$donnee[0].'&nbsp'.$donnee[1].'</p>';
+                                                $i++;
                                             }
                                             ?>
                                         </div>
