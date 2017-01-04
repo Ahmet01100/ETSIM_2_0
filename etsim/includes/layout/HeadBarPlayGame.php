@@ -9,7 +9,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
 	<link rel="stylesheet" href="assets/css/main.css" />
-	<link rel="stylesheet" href="/assets/css/flipclock.css">
+	<link rel="stylesheet" href="assets/css/flipclock.css">
 	<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
 	<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->	
 	<!-- Scripts -->
@@ -22,7 +22,7 @@
 		<script src="http://jqueryvalidation.org/files/dist/jquery.validate.min.js"></script>			
 		<script src="http://jqueryvalidation.org/files/dist/additional-methods.min.js"></script>
 		
-		<script src="/assets/js/flipclock/flipclock.min.js"></script>	
+		<script src="assets/js/flipclock/flipclock.min.js"></script>	
 	<script>
 		$(document).ready(function(){					
 			$('.join_etsim_game').click(function(){

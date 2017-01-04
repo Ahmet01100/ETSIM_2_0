@@ -90,6 +90,7 @@ function computebids(Array $array_input,$demand){
     $accepted=[];
     $acceptedVol=0;
     echo "</br> nous avons un cp de $cp ainsi que un nbc de $nbc  et equavol est de $equalVol </br>";
+    echo "</br> nous avons un cp de $cp ainsi que un nbc de $nbc  et equavol est de $equalVol </br>";
     foreach($price_sorted_array as $a){
         echo" nous avons un element avec un volume de ".$a[2]." et un prix de ".$a[1]." voila";
         if($a[1]<$cp){

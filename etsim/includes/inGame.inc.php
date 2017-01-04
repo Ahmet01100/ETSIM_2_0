@@ -21,9 +21,9 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
  	erg.demand_voume_etsim_round_game,
  	erg.market_price_etsim_round_game,
  	sum(erg.income_etsim_round_game) as income_etsim_round_game,
-    (sum(success)/count(*))*100 as ratio,
- 	sum(erg.cost_etsim_round_game) as cost_etsim_round_game,
- 	sum(erg.benefit_etsim_round_game) as benefit_etsim_round_game
+    ROUND(((sum(success)/count(*))*100),2) as ratio,
+ 	ROUND(sum(erg.cost_etsim_round_game),2) as cost_etsim_round_game,
+ 	ROUND(sum(erg.benefit_etsim_round_game),2) as benefit_etsim_round_game
  	FROM (
            SELECT 
                 erg.id_etsim_round_game,
@@ -152,7 +152,7 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
 			while($rowresultstmttableSelectPlantMemberResults = $stmttableSelectPlantMemberResults->fetch()) {
 				$SelectShowPlant = "SELECT  ep.*,
 											etp.*,
-											ha.v_costs_etsim_members_have
+											ROUND(ha.v_costs_etsim_members_have,2) as v_costs_etsim_members_have
 									FROM etsim_plant ep 
 										INNER JOIN is_type it 
 											ON ep.id_etsim_plant = it.id_etsim_plant 
@@ -170,6 +170,9 @@ if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Manager' || $_SESSION[
 					$stmtSelectShowPlant->execute();
 					//$resultstmtSelectShowPlant = $stmtSelectShowPlant->get_result();
 					while($rowresultstmtSelectShowPlant = $stmtSelectShowPlant->fetch()) {
+                        $rowresultstmtSelectShowPlant['fixed_costs_etsim_plant']=round($rowresultstmtSelectShowPlant['fixed_costs_etsim_plant'],2);
+                        
+                        
 						echo '<tr><input type="hidden" id="'.$rowresultstmtSelectShowPlant['id_etsim_plant'].'" name="name_etsim_type_plant" value="'.$rowresultstmtSelectShowPlant['name_etsim_type_plant'].'">
 								  <input type="hidden" id="'.$rowresultstmtSelectShowPlant['id_etsim_plant'].'" name="cost_mw_etsim_plant" value="'.$rowresultstmtSelectShowPlant['cost_mw_etsim_plant'].'">
 								  <input type="hidden" id="'.$rowresultstmtSelectShowPlant['id_etsim_plant'].'" name="om_mw_etsim_plant" value="'.$rowresultstmtSelectShowPlant['om_mw_etsim_plant'].'">

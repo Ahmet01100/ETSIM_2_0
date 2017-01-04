@@ -8,7 +8,7 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<link rel="stylesheet" href="assets/css/main.css" />
-	<link rel="stylesheet" href="/assets/css/flipclock.css">
+	<link rel="stylesheet" href="assets/css/flipclock.css">
 	<!-- Scripts -->
 	<script src="assets/js/jquery.min.js"></script>
 	<script src="assets/js/jquery.dropotron.min.js"></script>
@@ -18,7 +18,7 @@
 	<script src="assets/js/main.js"></script>
 	<script src="http://jqueryvalidation.org/files/dist/jquery.validate.min.js"></script>
 	<script src="http://jqueryvalidation.org/files/dist/additional-methods.min.js"></script>
-	<script src="/assets/js/flipclock/flipclock.min.js"></script>
+	<script src="assets/js/flipclock/flipclock.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
 
 

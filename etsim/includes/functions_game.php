@@ -401,8 +401,7 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
                         $insertResults->bindParam(':costEtsim',$rowresultSelectRoundTemp['cost_etsim_round_game_temp']); 
                         $insertResults->bindParam(':benefitEtsim',$rowresultSelectRoundTemp['benefit_etsim_round_game_temp']); 
                         $insertResults->bindParam(':capitalEtsim',$rowresultSelectRoundTemp['capital_etsim_round_game_temp']);
-                        
-                        
+
 					//	$insertResults->execute();
 											
 					}

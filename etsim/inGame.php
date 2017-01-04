@@ -102,8 +102,8 @@ if(!isset($_SESSION))
                                                 // Récupère le nombre de joueurs qui ont terminé le round
                                                 $totalUF = countUserTotalInGameFinnishRound($mysqli, $idGame, $roundGame);
                                                 //Récupère le statut du jeu (Open, Play...)
-                                                echo "<br/>Nb dans le jeu:".$totalU;
-                                                echo "<br/>Nb fini:".$totalUF;
+                                                /*echo "<br/>Nb dans le jeu:".$totalU;
+                                                echo "<br/>Nb fini:".$totalUF;*/
                                                 //Si tous les joueurs ont fini
                                                 if ( $totalU == $totalUF ) {
                                                     //echo "<br/>Je finis le round";
