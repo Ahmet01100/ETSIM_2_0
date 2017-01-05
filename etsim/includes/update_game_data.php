@@ -189,7 +189,7 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" ) {
 			} else if ( $_GET['ssval'] == 'Play' ) {
 				$currentdatetime = date("Y-m-d H:i:s");
 				for ($i = 1; $i <= 10; $i++) {
-					$NextTime = date('Y-m-d H:i:s', strtotime('+15 minutes', strtotime($currentdatetime)));
+					$NextTime = date('Y-m-d H:i:s', strtotime('+1 minutes', strtotime($currentdatetime)));
 					// $demandP = rand(2000,4000);
 					$demand = Array(1750, 1875, 2125, 2000, 2250, 2375, 3000, 3150, 3500, 4750);
 					$demandP = rand(0,9);

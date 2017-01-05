@@ -40,16 +40,26 @@ function computebids(Array $array_input,$demand){
     {
         echo $e->getMessage();
     }
+    if(($i-1)>=0)
+    {
+        $cp=floatval($price_sorted_array[$i-1][1]);
+    }
+    else
+        $cp=0;
     
-    $cp=floatval($price_sorted_array[$i-1][1]);
     $q=$demand;
     $nbc=0;
     $equbidvol=[];
     /*echo '<br/>i:'.$i;
     echo '<br/>q:'.$q;
     print_r($cumulatedVolume);*/
+    if(($i-2)>=0)
+    {
+        $volToShare=$q-$cumulatedVolume[$i-2][2];
+    }
+    else
+        $volToShare=$q;
     
-    $volToShare=$q-$cumulatedVolume[$i-2][2];
     foreach ($price_sorted_array as $p){
         if($p[1]==$cp){
             if($p[2]!=0)
@@ -59,7 +69,13 @@ function computebids(Array $array_input,$demand){
     }
     $volToShareRemain=$volToShare;
     $nbAtMaxvol=1;
-    $equalVol=$volToShareRemain/$nbc;
+    if($nbc>0)
+    {
+        $equalVol=$volToShareRemain/$nbc;
+    }
+    else
+        $equalVol=0;
+    
 
     if($nbc>1){
         while($nbAtMaxvol>0){
@@ -89,15 +105,15 @@ function computebids(Array $array_input,$demand){
     //an order is rejected other way
     $accepted=[];
     $acceptedVol=0;
-    echo "</br> nous avons un cp de $cp ainsi que un nbc de $nbc  et equavol est de $equalVol </br>";
-    echo "</br> nous avons un cp de $cp ainsi que un nbc de $nbc  et equavol est de $equalVol </br>";
+    //echo "</br> nous avons un cp de $cp ainsi que un nbc de $nbc  et equavol est de $equalVol </br>";
+    //echo "</br> nous avons un cp de $cp ainsi que un nbc de $nbc  et equavol est de $equalVol </br>";
     foreach($price_sorted_array as $a){
-        echo" nous avons un element avec un volume de ".$a[2]." et un prix de ".$a[1]." voila";
+        //echo" nous avons un element avec un volume de ".$a[2]." et un prix de ".$a[1]." voila";
         if($a[1]<$cp){
             $a[2]=min($a[2],$equalVol);
             $accepted[]=$a;
             $acceptedVol+=$a[2];
-            echo " et celui ci est accepté </br>";
+            //echo " et celui ci est accepté </br>";
             continue;
         }
         if($a[1]==$cp and $nbc==1){
@@ -105,29 +121,29 @@ function computebids(Array $array_input,$demand){
             $i= $i-1<0? 0 : $i-1;
             $a[2]=min($a[2],$q-$acceptedVol);
             $a[2]=min($a[2],$equalVol);
-            echo " son nouveau volume est de ".$a[2];
+            //echo " son nouveau volume est de ".$a[2];
             $acceptedVol+=$a[2];
             if($a[2]>0) $accepted[]=$a;
-            echo " et celui ci est accepté </br>";
+            //echo " et celui ci est accepté </br>";
             continue;
         }
         if($a[1]==$cp and $nbc>1){
             $a[2]=min($a[2],$equalVol);
-            echo " son nouveau volume est de ".$a[2];
+            //echo " son nouveau volume est de ".$a[2];
             if($a[2]>0) $accepted[]=$a;
             $acceptedVol+=$a[2];
-            echo " et celui ci est accepté </br>";
+            //echo " et celui ci est accepté </br>";
 
             continue;
         }
         else{
-            echo " et celui ci est refusé </br>";
+            //echo " et celui ci est refusé </br>";
 
             $rejected[]=$a;
         }
 
     }
-    echo "le nombre de résultat accepté est de ".sizeof($accepted)."</br>";
+    //echo "le nombre de résultat accepté est de ".sizeof($accepted)."</br>";
     return [$q,$cp,$accepted,$rejected];
 }
 
@@ -148,7 +164,11 @@ function mymin(Array $array,$index){
 }
 function getSumFromArray(Array $array,$index){
     $result=[];
-    $result[]=$array[0];
+    if(isset($array[0]))
+    {
+        $result[]=$array[0];
+    }
+        
     $i=1;
 
     while($i<sizeof($array)){
@@ -185,5 +205,5 @@ function custom_sort_2($a,$b){
 }
 
 function pretty_printer(array $a){
-    echo "i:".$a[0].' p:'.$a[1].' v:'.$a[2].'<br/>';
+    //echo "i:".$a[0].' p:'.$a[1].' v:'.$a[2].'<br/>';
 }

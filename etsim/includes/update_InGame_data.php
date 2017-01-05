@@ -173,6 +173,6 @@ if ($_SESSION['role'] == "Admin" || $_SESSION['role'] == "Manager" || $_SESSION[
 		}
 		//$SelectRoundTemp->close();
 	}
-    $_SESSION['roundGame']++;
+    //$_SESSION['roundGame']++;
 }
 ?>

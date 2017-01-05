@@ -36,7 +36,8 @@
 		        autoStart: false,
 		        callbacks: {
 		        	stop: function() {
-		        		$('.message').html('Time out for this round!')
+		        		$('.message').html('Time out for this round!');
+                        
 		        	}
 		        }
 			});
