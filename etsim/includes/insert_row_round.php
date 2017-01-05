@@ -57,7 +57,25 @@ if(!isset($_SESSION))
                 
                 
                 $stmtinsertRound->execute();
-            
+                /*var_dump($idGame);
+                var_dump($_SESSION['user_id']);
+                var_dump($numberRoundGame);
+                var_dump($demand);
+                var_dump($id_etsim);*/
+                
+                /*echo $_SESSION['id_etsim_game'];
+                echo '<br/>';
+                echo $_SESSION['user_id'];
+                echo '<br/>';
+                echo $_POST['numRound'];
+                echo '<br/>';
+                echo $_POST['demand'];
+                echo '<br/>';
+                echo $_POST['plantList'];
+                echo '<br/>';
+                echo $maxLine;
+                echo '<br/>';*/
+                //echo $_POST['plantList'];
             }           
                 
         }
